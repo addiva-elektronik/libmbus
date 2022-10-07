@@ -443,6 +443,18 @@ int mbus_data_fixed_normalize(int medium_unit_byte, long medium_value, char **un
 int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real, char **value_out_str, int *value_out_str_size);
 
 /**
+ * Decode value of a variable data structure
+ *
+ * Only handles integers and BCD encoded data that fits in a 32-bit integer.
+ *
+ * @param record          record to be decoded
+ * @param value_out       32-bit integer encoded data
+ *
+ * @return zero when OK
+ */
+int mbus_variable_value_decode_32(mbus_data_record *record, uint32_t *value_out);
+
+/**
  * Decode units and normalize value using VIF/VIFE (used internally by mbus_vib_unit_normalize)
  *
  * @param vif         VIF (including standard extensions)

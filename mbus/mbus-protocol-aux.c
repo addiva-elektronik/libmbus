@@ -1030,6 +1030,81 @@ int mbus_variable_value_decode(mbus_data_record *record, double *value_out_real,
     return result;
 }
 
+int mbus_variable_value_decode_32(mbus_data_record *record, uint32_t *value_out)
+{
+    int result = 0;
+    int value_out_int;
+
+    if (record)
+    {
+        MBUS_DEBUG("coding = 0x%02X \n", record->drh.dib.dif);
+
+        switch (record->drh.dib.dif & MBUS_DATA_RECORD_DIF_MASK_DATA)
+        {
+            case 0x01: /* 1 byte integer (8 bit) */
+                result = mbus_data_int_decode(record->data, 1, &value_out_int);
+                *value_out = value_out_int;
+                break;
+
+            case 0x02: /* 2 byte integer (16 bit) */
+                result = mbus_data_int_decode(record->data, 2, &value_out_int);
+                *value_out = value_out_int;
+                break;
+
+            case 0x03: /* 3 byte integer (24 bit) */
+                result = mbus_data_int_decode(record->data, 3, &value_out_int);
+                *value_out = value_out_int;
+                break;
+
+            case 0x04: /* 4 byte integer (32 bit) */
+                result = mbus_data_int_decode(record->data, 4, &value_out_int);
+                *value_out = value_out_int;
+                break;
+
+            case 0x00: /* no data */
+            case 0x05: /* 32b real */
+            case 0x06: /* 6 byte integer (48 bit) */
+            case 0x07: /* 8 byte integer (64 bit) */
+            case 0x0D: /* variable length */
+            case 0x0F: /* Special functions */
+                result = -1;
+                break;
+
+            case 0x09: /* 2 digit BCD (8 bit) */
+                *value_out = mbus_data_bcd_decode(record->data, 1);
+                break;
+
+            case 0x0A: /* 4 digit BCD (16 bit) */
+                *value_out = mbus_data_bcd_decode(record->data, 2);
+                break;
+
+            case 0x0B: /* 6 digit BCD (24 bit) */
+                *value_out = mbus_data_bcd_decode(record->data, 3);
+                break;
+
+            case 0x0C: /* 8 digit BCD (32 bit) */
+                *value_out = mbus_data_bcd_decode(record->data, 4);
+                break;
+
+            case 0x0E: /* 12 digit BCD (40 bit) */
+                *value_out = mbus_data_bcd_decode(record->data, 6);
+                break;
+
+            default:
+                result = -2;
+                MBUS_ERROR("Unknown DIF (0x%.2x)", record->drh.dib.dif);
+                break;
+        }
+    }
+    else
+    {
+        MBUS_ERROR("record is null");
+        result = -3;
+    }
+
+    return result;
+}
+
 int
 mbus_vif_unit_normalize(int vif, double value, char **unit_out, double *value_out, char **quantity_out)
 {
