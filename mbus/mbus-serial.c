@@ -27,6 +27,7 @@
 
 #define PACKET_BUFF_SIZE 2048
 
+/* XXX: Call mbus_error_str_set() in below error cases --Jocke */
 //------------------------------------------------------------------------------
 /// Set up a serial connection handle.
 //------------------------------------------------------------------------------
