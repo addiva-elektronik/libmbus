@@ -5129,11 +5129,18 @@ mbus_frame_get_secondary_address(mbus_frame *frame)
     mbus_frame_data *data;
     unsigned long id;
 
-    if (frame == NULL || (data = mbus_frame_data_new()) == NULL)
+    if (!frame)
+    {
+        snprintf(error_str, sizeof(error_str), "%s: missing argument.", __PRETTY_FUNCTION__);
+	return NULL;
+    }
+
+    data = mbus_frame_data_new();
+    if (data == NULL)
     {
         snprintf(error_str, sizeof(error_str),
                  "%s: Failed to allocate data structure [%p, %p].",
-                  __PRETTY_FUNCTION__, (void*)frame, (void*)data);
+                  __PRETTY_FUNCTION__, frame, data);
         return NULL;
     }
 
@@ -5159,7 +5166,6 @@ mbus_frame_get_secondary_address(mbus_frame *frame)
              data->data_var.header.version,
              data->data_var.header.medium);
 
-    // free data
     mbus_frame_data_free(data);
 
     return addr;
