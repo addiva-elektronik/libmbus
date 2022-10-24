@@ -18,7 +18,14 @@
 #ifndef MBUS_SERIAL_H
 #define MBUS_SERIAL_H
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#ifdef HAVE_TERMIOS_H
 #include <termios.h>
+#endif
+
 #include "mbus-protocol-aux.h"
 #include "mbus-protocol.h"
 
@@ -30,7 +37,11 @@ extern "C" {
 typedef struct _mbus_serial_data
 {
     char *device;
+#ifdef HAVE_TERMIOS_H
     struct termios t;
+#else
+    void *private;
+#endif
 } mbus_serial_data;
 
 int  mbus_serial_connect(mbus_handle *handle);

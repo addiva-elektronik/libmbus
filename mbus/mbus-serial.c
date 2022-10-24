@@ -8,6 +8,10 @@
 //
 //------------------------------------------------------------------------------
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <unistd.h>
 #include <limits.h>
 #include <fcntl.h>
@@ -17,7 +21,11 @@
 #include <stdio.h>
 #include <strings.h>
 
+#ifdef HAVE_TERMIOS_H
 #include <termios.h>
+#else
+#error "No 'struct termios' on platform, you need to supply your own mbus-serial.c"
+#endif
 #include <errno.h>
 #include <string.h>
 

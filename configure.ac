@@ -26,6 +26,9 @@ AC_PROG_CC
 
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([Makefile mbus/Makefile test/Makefile bin/Makefile libmbus.pc])
+
+AC_CHECK_HEADERS([termios.h])
+
 AC_OUTPUT
 
 
