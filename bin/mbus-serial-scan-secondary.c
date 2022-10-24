@@ -168,6 +168,7 @@ main(int argc, char **argv)
 
     if (init_slaves(handle) == 0)
     {
+	mbus_frame_free(frame);
         free(addr_mask);
         return 1;
     }
@@ -177,7 +178,7 @@ main(int argc, char **argv)
     mbus_disconnect(handle);
     mbus_context_free(handle);
     //printf("Summary: Tried %ld address masks and found %d devices.\n", probe_count, match_count);
-
+    mbus_frame_free(frame);
     free(addr_mask);
 
     return 0;
