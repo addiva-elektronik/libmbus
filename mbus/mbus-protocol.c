@@ -37,9 +37,9 @@ mbus_manufacturer_id(char *manufacturer)
     if (!manufacturer || strlen(manufacturer) < 3)
         return 0;
 
-    if (!isalpha(manufacturer[0]) ||
-        !isalpha(manufacturer[1]) ||
-        !isalpha(manufacturer[2]))
+    if (!isalpha((unsigned char)manufacturer[0]) ||
+        !isalpha((unsigned char)manufacturer[1]) ||
+        !isalpha((unsigned char)manufacturer[2]))
         return 0;
 
     id = (toupper(manufacturer[0]) - 64) * 32 * 32 +
@@ -5276,7 +5276,7 @@ mbus_is_secondary_address(const char * value)
 
     for (i = 0; i < 16; i++)
     {
-        if (!isxdigit(value[i]))
+        if (!isxdigit((unsigned char)value[i]))
             return 0;
     }
 
