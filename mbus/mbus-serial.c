@@ -182,6 +182,52 @@ mbus_serial_set_baudrate(mbus_handle *handle, long baudrate)
 
 
 //------------------------------------------------------------------------------
+// Set parity for serial connection.  Not needed in common case, standard says
+// 2400 8E1.  However, in some interop cases or for testing, some usb<->serial
+// converters may not support parity bit (at all!).  This function is for such
+// cases.  The mbus_serial_connect() function honors the standard.
+//
+// parity: 0 - off, 1 - odd, 2 - even (default: odd according to M-Bus std)
+//------------------------------------------------------------------------------
+int
+mbus_serial_parity(mbus_handle *handle, int parity)
+{
+    mbus_serial_data *data;
+    struct termios *c;
+
+    if (handle == NULL)
+    {
+	return -1;
+    }
+
+    data = (mbus_serial_data *)handle->auxdata;
+    if (data == NULL)
+    {
+	return -1;
+    }
+
+    c = &(data->t);
+    switch (parity) {
+    case 0:
+	c->c_cflag &= ~PARENB;
+	c->c_cflag &= ~PARODD;
+	break;
+    case 1:
+	c->c_cflag |=  PARENB;
+	c->c_cflag &= ~PARODD;
+	break;
+    case 2:
+	c->c_cflag &= ~PARENB;
+	c->c_cflag |=  PARODD;
+	break;
+    default:
+	return -1;
+    }
+
+    return tcsetattr(handle->fd, TCSANOW, c);
+}
+
+//------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
 int
