@@ -2295,7 +2295,7 @@ mbus_send_ping_frame(mbus_handle *handle, int address, char purge_response)
 int
 mbus_select_secondary_address(mbus_handle * handle, const char *mask)
 {
-    int ret;
+    int ret = MBUS_PROBE_ERROR;
     mbus_frame reply;
 
     if (mask == NULL || strlen(mask) != 16)
@@ -2351,7 +2351,7 @@ mbus_select_secondary_address(mbus_handle * handle, const char *mask)
 int
 mbus_probe_secondary_address(mbus_handle *handle, const char *mask, char *matching_addr)
 {
-    int ret, i;
+    int ret = MBUS_PROBE_ERROR, i;
     mbus_frame reply;
 
     if (mask == NULL || matching_addr == NULL || strlen(mask) != 16)
@@ -2514,7 +2514,7 @@ int mbus_read_slave(mbus_handle * handle, mbus_address *address, mbus_frame * re
 int
 mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask)
 {
-    int i, i_start, i_end, probe_ret;
+    int i, i_start = 0, i_end = 0, probe_ret;
     char *mask, matching_mask[17];
 
     if (handle == NULL || addr_mask == NULL)
