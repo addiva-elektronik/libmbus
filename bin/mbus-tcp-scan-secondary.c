@@ -22,9 +22,9 @@ int
 main(int argc, char **argv)
 {
     char *host, *addr_mask = NULL;
-    long port;
     mbus_handle *handle = NULL;
-    mbus_frame *frame = NULL, reply;
+    mbus_frame reply;
+    long port;
 
     memset((void *)&reply, 0, sizeof(mbus_frame));
 

@@ -32,17 +32,15 @@ main(int argc, char **argv)
 {
     unsigned char raw_buff[4096], buff[4096];
     char *device, *addr_str, *file = NULL;
+    mbus_frame_data reply_data;
+    mbus_handle *handle = NULL;
+    mbus_frame reply, request;
     long baudrate = 9600;
     size_t buff_len, len;
     int address, result;
     FILE *fp = NULL;
     int retries = 0;
-    long port;
     int c;
-
-    mbus_frame reply, request;
-    mbus_frame_data reply_data;
-    mbus_handle *handle = NULL;
 
     arg0 = argv[0];
     memset(&reply, 0, sizeof(mbus_frame));

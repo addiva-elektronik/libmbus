@@ -50,11 +50,11 @@ init_slaves(mbus_handle *handle)
 int
 main(int argc, char **argv)
 {
-    mbus_handle *handle = NULL;
-    mbus_frame reply;
-    char *device, *old_address_str, *xml_result;
+    char *device, *old_address_str;
     int old_address, new_address;
+    mbus_handle *handle = NULL;
     long baudrate = 9600;
+    mbus_frame reply;
     int ret;
 
     if (argc == 4)

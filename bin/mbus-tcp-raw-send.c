@@ -21,16 +21,16 @@ static int debug = 0;
 int
 main(int argc, char **argv)
 {
-    mbus_frame reply, request;
+
+    unsigned char raw_buff[4096], buff[4096];
+    char *host, *addr_str, *file = NULL;
     mbus_frame_data reply_data;
     mbus_handle *handle = NULL;
-
-    char *host, *addr_str, matching_addr[16], *file = NULL;
-    long port;
+    mbus_frame reply, request;
+    size_t buff_len, len;
     int address, result;
     FILE *fp = NULL;
-    size_t buff_len, len;
-    unsigned char raw_buff[4096], buff[4096];
+    long port;
 
     memset((void *)&reply, 0, sizeof(mbus_frame));
     memset((void *)&reply_data, 0, sizeof(mbus_frame_data));

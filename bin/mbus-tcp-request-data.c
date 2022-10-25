@@ -21,11 +21,10 @@ static int debug = 0;
 int
 main(int argc, char **argv)
 {
-    mbus_frame reply;
+    char *host, *addr_str, *xml_result;
     mbus_frame_data reply_data;
     mbus_handle *handle = NULL;
-
-    char *host, *addr_str, matching_addr[16], *xml_result;
+    mbus_frame reply;
     int address;
     long port;
 
