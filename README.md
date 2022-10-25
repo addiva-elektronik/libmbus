@@ -1,14 +1,40 @@
-Open Source M-bus Library
--------------------------
+Open Source M-bus (Meter-Bus) Library
+-------------------------------------
 [![License Badge][]][License] [![GitHub Status][]][GitHub]
 
 libmbus is an open source library for the M-bus (Meter-Bus) protocol.
 
-The Meter-Bus is a standard for reading out meter data from electricity meters,
-heat meters, gas meters, etc. The M-bus standard deals with both the electrical
-signals on the M-Bus, and the protocol and data format used in transmissions on
-the M-Bus. The role of libmbus is to decode/encode M-bus data, and to handle
-the communication with M-Bus devices.
+The Meter-Bus is a standard for reading out meter data from electricity
+meters, heat meters, gas meters, etc.  The M-bus standard deals with
+both the electrical signals on the M-Bus, and the protocol and data
+format used in transmissions on the M-Bus.  The role of libmbus is to
+decode/encode M-bus data, and to handle the communication with M-Bus
+devices.
+
+Wired M-Bus Specification (v4.8):
+
+ - <https://m-bus.com/documentation-wired/01-introduction>
+ - <https://m-bus.com/assets/downloads/MBDOC48.PDF>
+
+Manufacturer ID list:
+
+ - <https://www.m-bus.de/man.html>
+
+Example M-Bus Master:
+
+ - <https://github.com/addiva-elektronik/mbus-master>
+
+Example M-Bus Device (slave):
+
+ - <https://github.com/addiva-elektronik/mbus-device>
+
+
+Building
+--------
+
+    ./autogen.sh             # only needed from git clone
+    ./configure
+    make
 
 
 Origin & References
