@@ -8,6 +8,7 @@
 //
 //------------------------------------------------------------------------------
 
+#include <errno.h>
 #include <string.h>
 
 #include <stdio.h>
@@ -145,13 +146,20 @@ main(int argc, char **argv)
 
     memset(raw_buff, 0, sizeof(raw_buff));
     len = fread(raw_buff, 1, sizeof(raw_buff), fp);
+    if (len == 0 || (len < sizeof(raw_buff) && ferror(fp)))
+    {
+	fprintf(stderr, "Failed reading file contents: %s\n", strerror(errno));
+	if (fp != stdin)
+	    fclose(fp);
+	return 1;
+    }
 
     if (fp != stdin)
     {
         fclose(fp);
     }
 
-    buff_len = mbus_hex2bin(buff,sizeof(buff),raw_buff,sizeof(raw_buff));
+    buff_len = mbus_hex2bin(buff, sizeof(buff), raw_buff, len);
 
     //
     // attempt to parse the input data
