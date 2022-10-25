@@ -66,12 +66,14 @@ static mbus_slave_data slave_data[MBUS_MAX_PRIMARY_SLAVES];
 void
 mbus_dump_recv_event(unsigned char src_type, const char *buff, size_t len)
 {
+    (void)src_type;
     mbus_hex_dump("RECV", buff, len);
 }
 
 void
 mbus_dump_send_event(unsigned char src_type, const char *buff, size_t len)
 {
+    (void)src_type;
     mbus_hex_dump("SEND", buff, len);
 }
 
@@ -4617,6 +4619,9 @@ mbus_data_variable_record_xml(mbus_data_record *record, int record_cnt, int fram
     size_t len = 0;
     struct tm * tm;
     long tariff;
+
+    /* XXX: currently unused */
+    (void)header;
 
     if (record)
     {
