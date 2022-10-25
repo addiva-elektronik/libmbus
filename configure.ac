@@ -13,6 +13,7 @@ dnl ----------------------------------------------------------------------------
 AC_INIT([libmbus], [0.9.0], [info@rscada.se], [libmbus], [http://www.rscada.se/libmbus/])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([-W -Wall foreign])
+AM_SILENT_RULES([yes])
 
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([Makefile

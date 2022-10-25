@@ -10,10 +10,7 @@
 PACKAGE			= @PACKAGE@
 VERSION			= @VERSION@
 
-AM_CPPFLAGS	= -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/src
-
-noinst_HEADERS			= 
-bin_PROGRAMS			= mbus-tcp-scan mbus-tcp-request-data mbus-tcp-request-data-multi-reply \
+bin_PROGRAMS            = mbus-tcp-scan mbus-tcp-request-data mbus-tcp-request-data-multi-reply \
                           mbus-tcp-select-secondary mbus-tcp-scan-secondary \
                           mbus-serial-scan mbus-serial-request-data mbus-serial-request-data-multi-reply \
                           mbus-serial-select-secondary mbus-serial-scan-secondary \

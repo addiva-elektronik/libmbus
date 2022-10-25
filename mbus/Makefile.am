@@ -7,13 +7,8 @@
 # info@rscada.se
 #
 # ------------------------------------------------------------------------------
-PACKAGE		= @PACKAGE@
-VERSION		= @VERSION@
-
-AM_CPPFLAGS	= -I$(top_builddir) -I$(top_srcdir)
-
-includedir = $(prefix)/include/mbus
-include_HEADERS = mbus.h mbus-protocol.h mbus-tcp.h mbus-serial.h mbus-protocol-aux.h
+includedir         = $(prefix)/include/mbus
+include_HEADERS    = mbus.h mbus-protocol.h mbus-tcp.h mbus-serial.h mbus-protocol-aux.h
 
 # Rules for how (and when!) to update the ABI version, see:
 # https://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html
