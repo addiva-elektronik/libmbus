@@ -1,17 +1,13 @@
-#
-#
-#
 PACKAGE		= @PACKAGE@
 VERSION		= @VERSION@
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libmbus.pc
 
-
 docdir = $(datadir)/doc/$(PACKAGE)-$(VERSION)
 dist_docdir = $(DESTDIR)$(docdir)
 doc_DATA = README.md \
-           COPYING \
+           LICENSE \
            hardware/MBus_USB.pdf \
            hardware/MBus_USB.txt
 
