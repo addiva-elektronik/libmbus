@@ -1540,7 +1540,7 @@ mbus_data_variable_xml_normalized(mbus_data_variable *data)
             len += snprintf(&buff[len], buff_size - len, "    </DataRecord>\n\n");
         }
 
-        len += snprintf(&buff[len], buff_size - len, "</MBusData>\n");
+        snprintf(&buff[len], buff_size - len, "</MBusData>\n");
 
         return buff;
     }

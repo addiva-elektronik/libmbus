@@ -4598,8 +4598,7 @@ mbus_data_variable_header_xml(mbus_data_variable_header *header)
         len += snprintf(&buff[len], sizeof(buff) - len, "        <AccessNumber>%d</AccessNumber>\n", header->access_no);
         len += snprintf(&buff[len], sizeof(buff) - len, "        <Status>%.2X</Status>\n", header->status);
         len += snprintf(&buff[len], sizeof(buff) - len, "        <Signature>%.2X%.2X</Signature>\n", header->signature[1], header->signature[0]);
-
-        len += snprintf(&buff[len], sizeof(buff) - len, "    </SlaveInformation>\n\n");
+        snprintf(&buff[len], sizeof(buff) - len, "    </SlaveInformation>\n\n");
 
         return buff;
     }
@@ -4686,7 +4685,7 @@ mbus_data_variable_record_xml(mbus_data_record *record, int record_cnt, int fram
                             "        <Timestamp>%s</Timestamp>\n", timestamp);
         }
 
-        len += snprintf(&buff[len], sizeof(buff) - len, "    </DataRecord>\n\n");
+        snprintf(&buff[len], sizeof(buff) - len, "    </DataRecord>\n\n");
 
         return buff;
     }
@@ -4738,7 +4737,7 @@ mbus_data_variable_xml(mbus_data_variable *data)
             len += snprintf(&buff[len], buff_size - len, "%s",
                             mbus_data_variable_record_xml(record, i, -1, &(data->header)));
         }
-        len += snprintf(&buff[len], buff_size - len, "</MBusData>\n");
+        snprintf(&buff[len], buff_size - len, "</MBusData>\n");
 
         return buff;
     }
@@ -4815,8 +4814,7 @@ mbus_data_fixed_xml(mbus_data_fixed *data)
         }
 
         len += snprintf(&buff[len], buff_size - len, "    </DataRecord>\n\n");
-
-        len += snprintf(&buff[len], buff_size - len, "</MBusData>\n");
+        snprintf(&buff[len], buff_size - len, "</MBusData>\n");
 
         return buff;
     }
@@ -4849,7 +4847,7 @@ mbus_data_error_xml(int error)
 
     len += snprintf(&buff[len], buff_size - len, "    </SlaveInformation>\n\n");
 
-    len += snprintf(&buff[len], buff_size - len, "</MBusData>\n");
+    snprintf(&buff[len], buff_size - len, "</MBusData>\n");
 
     return buff;
 }
@@ -5020,7 +5018,7 @@ mbus_frame_xml(mbus_frame *frame)
                 }
             }
 
-            len += snprintf(&buff[len], buff_size - len, "</MBusData>\n");
+            snprintf(&buff[len], buff_size - len, "</MBusData>\n");
 
             return buff;
         }
