@@ -5155,7 +5155,7 @@ mbus_frame_get_secondary_address(mbus_frame *frame)
     {
         snprintf(error_str, sizeof(error_str),
                  "%s: Failed to allocate data structure [%p, %p].",
-                  __func__, frame, data);
+		 __func__, (void *)frame, (void *)data);
         return NULL;
     }
 
