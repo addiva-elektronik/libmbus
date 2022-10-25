@@ -7,15 +7,7 @@ if [ -f Makefile ]; then
 else
     # regenerate automake files
     echo "Running autotools..."
-
-    autoheader \
-        && aclocal \
-        && case \
-          $(uname) in Darwin*) glibtoolize --ltdl --copy --force ;; \
-          *) libtoolize --ltdl --copy --force ;; esac \
-        && automake --add-missing --copy \
-        && autoconf \
-        && ./configure
+    ./autogen.sh && ./configure
 fi
 
 make

@@ -13,12 +13,7 @@ if [ ! -f Makefile ]; then
 	# regenerate automake files
 	#
     echo "Running autotools..."
-
-    autoheader \
-        && aclocal \
-        && libtoolize --ltdl --copy --force \
-        && automake --add-missing --copy \
-        && autoconf
+    ./autogen.sh && ./configure
 fi
 
 debuild -i -us -uc -b 
