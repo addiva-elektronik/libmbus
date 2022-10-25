@@ -22,7 +22,9 @@ jobs:
           brew install automake
       - name: Build
         run: |
-          ./build.sh
+          ./autogen.sh
+          ./configure
+          make
       - name: Build tests
         run: |
           cd test
