@@ -777,7 +777,7 @@ mbus_data_bin_decode(unsigned char *dst, const unsigned char *src, size_t len, s
     if (src && dst)
     {
         while((i < len) && ((pos+3) < max_len)) {
-            pos += snprintf(&dst[pos], max_len - pos, "%.2X ", src[i]);
+            pos += snprintf((char *)&dst[pos], max_len - pos, "%.2X ", src[i]);
             i++;
         }
 
@@ -898,7 +898,7 @@ mbus_decode_manufacturer(unsigned char byte1, unsigned char byte2)
     m_str[0] = byte1;
     m_str[1] = byte2;
 
-    mbus_data_int_decode(m_str, 2, &m_id);
+    mbus_data_int_decode((unsigned char *)m_str, 2, &m_id);
 
     m_str[0] = (char)(((m_id>>10) & 0x001F) + 64);
     m_str[1] = (char)(((m_id>>5)  & 0x001F) + 64);
@@ -3341,13 +3341,13 @@ mbus_data_record_decode(mbus_data_record *record)
 
             case 0x0F: // special functions
 
-                mbus_data_bin_decode(buff, record->data, record->data_len, sizeof(buff));
+                mbus_data_bin_decode((unsigned char *)buff, record->data, record->data_len, sizeof(buff));
                 break;
 
             case 0x0D: // variable length
                 if (record->data_len <= 0xBF)
                 {
-                    mbus_data_str_decode(buff, record->data, record->data_len);
+                    mbus_data_str_decode((unsigned char *)buff, record->data, record->data_len);
                     break;
                 }
                 /*@fallthrough@*/
@@ -4545,16 +4545,16 @@ mbus_str_xml_encode(unsigned char *dst, const unsigned char *src, size_t max_len
             switch (src[i])
             {
                 case '&':
-                    len += snprintf(&dst[len], max_len - len, "&amp;");
+                    len += snprintf((char *)&dst[len], max_len - len, "&amp;");
                     break;
                 case '<':
-                    len += snprintf(&dst[len], max_len - len, "&lt;");
+                    len += snprintf((char *)&dst[len], max_len - len, "&lt;");
                     break;
                 case '>':
-                    len += snprintf(&dst[len], max_len - len, "&gt;");
+                    len += snprintf((char *)&dst[len], max_len - len, "&gt;");
                     break;
                 case '"':
-                    len += snprintf(&dst[len], max_len - len, "&quot;");
+                    len += snprintf((char *)&dst[len], max_len - len, "&quot;");
                     break;
                 default:
                     dst[len++] = src[i];
@@ -4588,11 +4588,11 @@ mbus_data_variable_header_xml(mbus_data_variable_header *header)
                 mbus_decode_manufacturer(header->manufacturer[0], header->manufacturer[1]));
         len += snprintf(&buff[len], sizeof(buff) - len, "        <Version>%d</Version>\n", header->version);
 
-        mbus_str_xml_encode(str_encoded, mbus_data_product_name(header), sizeof(str_encoded));
+        mbus_str_xml_encode((unsigned char *)str_encoded, (const unsigned char *)mbus_data_product_name(header), sizeof(str_encoded));
 
         len += snprintf(&buff[len], sizeof(buff) - len, "        <ProductName>%s</ProductName>\n", str_encoded);
 
-        mbus_str_xml_encode(str_encoded, mbus_data_variable_medium_lookup(header->medium), sizeof(str_encoded));
+        mbus_str_xml_encode((unsigned char *)str_encoded, (const unsigned char *)mbus_data_variable_medium_lookup(header->medium), sizeof(str_encoded));
 
         len += snprintf(&buff[len], sizeof(buff) - len, "        <Medium>%s</Medium>\n", str_encoded);
         len += snprintf(&buff[len], sizeof(buff) - len, "        <AccessNumber>%d</AccessNumber>\n", header->access_no);
@@ -4649,7 +4649,7 @@ mbus_data_variable_record_xml(mbus_data_record *record, int record_cnt, int fram
         }
         else
         {
-            mbus_str_xml_encode(str_encoded, mbus_data_record_function(record), sizeof(str_encoded));
+            mbus_str_xml_encode((unsigned char *)str_encoded, (const unsigned char *)mbus_data_record_function(record), sizeof(str_encoded));
             len += snprintf(&buff[len], sizeof(buff) - len,
                             "        <Function>%s</Function>\n", str_encoded);
 
@@ -4665,12 +4665,12 @@ mbus_data_variable_record_xml(mbus_data_record *record, int record_cnt, int fram
                                 mbus_data_record_device(record));
             }
 
-            mbus_str_xml_encode(str_encoded, mbus_data_record_unit(record), sizeof(str_encoded));
+            mbus_str_xml_encode((unsigned char *)str_encoded, (const unsigned char *)mbus_data_record_unit(record), sizeof(str_encoded));
             len += snprintf(&buff[len], sizeof(buff) - len,
                             "        <Unit>%s</Unit>\n", str_encoded);
         }
 
-        mbus_str_xml_encode(str_encoded, mbus_data_record_value(record), sizeof(str_encoded));
+        mbus_str_xml_encode((unsigned char *)str_encoded, (const unsigned char *)mbus_data_record_value(record), sizeof(str_encoded));
         len += snprintf(&buff[len], sizeof(buff) - len, "        <Value>%s</Value>\n", str_encoded);
 
         if (record->timestamp > 0)
@@ -4771,7 +4771,7 @@ mbus_data_fixed_xml(mbus_data_fixed *data)
         len += snprintf(&buff[len], buff_size - len, "    <SlaveInformation>\n");
         len += snprintf(&buff[len], buff_size - len, "        <Id>%llX</Id>\n", mbus_data_bcd_decode_hex(data->id_bcd, 4));
 
-        mbus_str_xml_encode(str_encoded, mbus_data_fixed_medium(data), sizeof(str_encoded));
+        mbus_str_xml_encode((unsigned char *)str_encoded, (const unsigned char *)mbus_data_fixed_medium(data), sizeof(str_encoded));
         len += snprintf(&buff[len], buff_size - len, "        <Medium>%s</Medium>\n", str_encoded);
 
         len += snprintf(&buff[len], buff_size - len, "        <AccessNumber>%d</AccessNumber>\n", data->tx_cnt);
@@ -4780,10 +4780,10 @@ mbus_data_fixed_xml(mbus_data_fixed *data)
 
         len += snprintf(&buff[len], buff_size - len, "    <DataRecord id=\"0\">\n");
 
-        mbus_str_xml_encode(str_encoded, mbus_data_fixed_function(data->status), sizeof(str_encoded));
+        mbus_str_xml_encode((unsigned char *)str_encoded, (const unsigned char *)mbus_data_fixed_function(data->status), sizeof(str_encoded));
         len += snprintf(&buff[len], buff_size - len, "        <Function>%s</Function>\n", str_encoded);
 
-        mbus_str_xml_encode(str_encoded, mbus_data_fixed_unit(data->cnt1_type), sizeof(str_encoded));
+        mbus_str_xml_encode((unsigned char *)str_encoded, (const unsigned char *)mbus_data_fixed_unit(data->cnt1_type), sizeof(str_encoded));
         len += snprintf(&buff[len], buff_size - len, "        <Unit>%s</Unit>\n", str_encoded);
         if ((data->status & MBUS_DATA_FIXED_STATUS_FORMAT_MASK) == MBUS_DATA_FIXED_STATUS_FORMAT_BCD)
         {
@@ -4799,10 +4799,10 @@ mbus_data_fixed_xml(mbus_data_fixed *data)
 
         len += snprintf(&buff[len], buff_size - len, "    <DataRecord id=\"1\">\n");
 
-        mbus_str_xml_encode(str_encoded, mbus_data_fixed_function(data->status), sizeof(str_encoded));
+        mbus_str_xml_encode((unsigned char *)str_encoded, (const unsigned char *)mbus_data_fixed_function(data->status), sizeof(str_encoded));
         len += snprintf(&buff[len], buff_size - len, "        <Function>%s</Function>\n", str_encoded);
 
-        mbus_str_xml_encode(str_encoded, mbus_data_fixed_unit(data->cnt2_type), sizeof(str_encoded));
+        mbus_str_xml_encode((unsigned char *)str_encoded, (const unsigned char *)mbus_data_fixed_unit(data->cnt2_type), sizeof(str_encoded));
         len += snprintf(&buff[len], buff_size - len, "        <Unit>%s</Unit>\n", str_encoded);
         if ((data->status & MBUS_DATA_FIXED_STATUS_FORMAT_MASK) == MBUS_DATA_FIXED_STATUS_FORMAT_BCD)
         {
@@ -4844,7 +4844,7 @@ mbus_data_error_xml(int error)
 
     len += snprintf(&buff[len], buff_size - len, "    <SlaveInformation>\n");
 
-    mbus_str_xml_encode(str_encoded, mbus_data_error_lookup(error), sizeof(str_encoded));
+    mbus_str_xml_encode((unsigned char *)str_encoded, (const unsigned char *)mbus_data_error_lookup(error), sizeof(str_encoded));
     len += snprintf(&buff[len], buff_size - len, "        <Error>%s</Error>\n", str_encoded);
 
     len += snprintf(&buff[len], buff_size - len, "    </SlaveInformation>\n\n");

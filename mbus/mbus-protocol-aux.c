@@ -1207,7 +1207,7 @@ mbus_vib_unit_normalize(mbus_value_information_block *vib, double value, char **
         {
             // custom VIF
             *unit_out = strdup("-");
-            *quantity_out = strdup(vib->custom_vif);
+            *quantity_out = strdup((char *)vib->custom_vif);
             *value_out = value;
         }
         else
@@ -1520,7 +1520,7 @@ mbus_data_variable_xml_normalized(mbus_data_variable *data)
 
             if (norm_record != NULL)
             {
-                mbus_str_xml_encode(str_encoded, norm_record->function_medium, sizeof(str_encoded));
+                mbus_str_xml_encode((unsigned char *)str_encoded, (unsigned char *)norm_record->function_medium, sizeof(str_encoded));
                 len += snprintf(&buff[len], buff_size - len, "        <Function>%s</Function>\n", str_encoded);
 
                 len += snprintf(&buff[len], buff_size - len, "        <StorageNumber>%ld</StorageNumber>\n", norm_record->storage_number);
@@ -1531,11 +1531,11 @@ mbus_data_variable_xml_normalized(mbus_data_variable *data)
                     len += snprintf(&buff[len], buff_size - len, "        <Device>%d</Device>\n", norm_record->device);
                 }
 
-                mbus_str_xml_encode(str_encoded, norm_record->unit, sizeof(str_encoded));
+                mbus_str_xml_encode((unsigned char *)str_encoded, (unsigned char *)norm_record->unit, sizeof(str_encoded));
 
                 len += snprintf(&buff[len], buff_size - len, "        <Unit>%s</Unit>\n", str_encoded);
 
-                mbus_str_xml_encode(str_encoded, norm_record->quantity, sizeof(str_encoded));
+                mbus_str_xml_encode((unsigned char *)str_encoded, (unsigned char *)norm_record->quantity, sizeof(str_encoded));
                 len += snprintf(&buff[len], buff_size - len, "        <Quantity>%s</Quantity>\n", str_encoded);
 
 
@@ -1545,7 +1545,7 @@ mbus_data_variable_xml_normalized(mbus_data_variable *data)
                 }
                 else
                 {
-                    mbus_str_xml_encode(str_encoded, norm_record->value.str_val.value, sizeof(str_encoded));
+                    mbus_str_xml_encode((unsigned char *)str_encoded, (unsigned char *)norm_record->value.str_val.value, sizeof(str_encoded));
                     len += snprintf(&buff[len], buff_size - len, "        <Value>%s</Value>\n", str_encoded);
                 }
 
@@ -2656,7 +2656,7 @@ mbus_hex2bin(unsigned char * dst, size_t dst_len, const unsigned char * src, siz
 
         end = buf;
         ptr = end;
-        val = strtoul(ptr, (char **)&end, 16);
+        val = strtoul((char *)ptr, (char **)&end, 16);
 
         // abort at non hex value
         if (ptr == end)

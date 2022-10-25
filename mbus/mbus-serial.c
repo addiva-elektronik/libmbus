@@ -320,7 +320,7 @@ mbus_serial_send_frame(mbus_handle *handle, mbus_frame *frame)
         // call the send event function, if the callback function is registered
         //
         if (handle->send_event)
-                handle->send_event(MBUS_HANDLE_TYPE_SERIAL, buff, len);
+	    handle->send_event(MBUS_HANDLE_TYPE_SERIAL, (char *)buff, len);
     }
     else
     {
@@ -406,7 +406,7 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
 
         len += nread;
 
-    } while ((remaining = mbus_parse(frame, buff, len)) > 0);
+    } while ((remaining = mbus_parse(frame, (unsigned char *)buff, len)) > 0);
 
     if (len == 0)
     {

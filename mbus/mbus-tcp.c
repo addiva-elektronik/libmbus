@@ -166,7 +166,7 @@ mbus_tcp_send_frame(mbus_handle *handle, mbus_frame *frame)
         // call the send event function, if the callback function is registered
         //
         if (handle->send_event)
-            handle->send_event(MBUS_HANDLE_TYPE_TCP, buff, len);
+	    handle->send_event(MBUS_HANDLE_TYPE_TCP, (char *)buff, len);
     }
     else
     {
@@ -183,7 +183,7 @@ mbus_tcp_send_frame(mbus_handle *handle, mbus_frame *frame)
 //------------------------------------------------------------------------------
 int mbus_tcp_recv_frame(mbus_handle *handle, mbus_frame *frame)
 {
-    char buff[PACKET_BUFF_SIZE];
+    unsigned char buff[PACKET_BUFF_SIZE];
     int remaining;
     ssize_t len, nread;
 
@@ -239,7 +239,7 @@ retry:
     // call the receive event function, if the callback function is registered
     //
     if (handle->recv_event)
-        handle->recv_event(MBUS_HANDLE_TYPE_TCP, buff, len);
+        handle->recv_event(MBUS_HANDLE_TYPE_TCP, (char *)buff, len);
 
     if (remaining < 0) {
         mbus_error_str_set("M-Bus layer failed to parse data.");
