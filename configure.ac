@@ -32,7 +32,7 @@ AC_CHECK_HEADERS([math.h termios.h])
 AC_SEARCH_LIBS([pow], [m])
 AC_CHECK_FUNCS([strdup malloc pow])
 
-AC_REPLACE_FUNCS([pow])
+AC_REPLACE_FUNCS([pow strdup])
 AC_CONFIG_LIBOBJ_DIR([lib])
 
 AC_OUTPUT

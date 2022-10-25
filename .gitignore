@@ -34,6 +34,7 @@ config.h
 
 # make:
 bin/.deps
+lib/.deps
 mbus/.deps
 test/.deps
 

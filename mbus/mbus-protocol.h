@@ -24,10 +24,16 @@
 
 #include <stdlib.h>
 #include <stdint.h>
+#include <string.h>
 #include <time.h>
 
 #ifdef HAVE_MATH_H
 #include <math.h>
+#endif
+
+#ifndef HAVE_STRDUP
+# define strdup fs_strdup
+extern char *fs_strdup(const char *str);
 #endif
 
 #ifndef HAVE_POW
