@@ -48,7 +48,6 @@ test/.deps
 .libs/
 bin/libmbus.1
 bin/libmbus.1
-bin/mbus-serial-raw-send
 bin/mbus-serial-request-data
 bin/mbus-serial-request-data-multi-reply
 bin/mbus-serial-scan
