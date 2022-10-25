@@ -7,6 +7,7 @@
 # info@rscada.se
 #
 # ------------------------------------------------------------------------------  
+AUTOMAKE_OPTIONS        = subdir-objects
 PACKAGE			= @PACKAGE@
 VERSION			= @VERSION@
 
@@ -19,64 +20,64 @@ bin_PROGRAMS            = mbus-tcp-scan mbus-tcp-request-data mbus-tcp-request-d
 
 # tcp
 mbus_tcp_scan_LDFLAGS	= -L$(top_builddir)/mbus
-mbus_tcp_scan_LDADD		= -lmbus -lm
+mbus_tcp_scan_LDADD		= -lmbus $(LIBS) $(LIBOBJS)
 mbus_tcp_scan_SOURCES	= mbus-tcp-scan.c 
 
 mbus_tcp_request_data_LDFLAGS = -L$(top_builddir)/mbus
-mbus_tcp_request_data_LDADD	  = -lmbus -lm
+mbus_tcp_request_data_LDADD	  = -lmbus $(LIBS) $(LIBOBJS)
 mbus_tcp_request_data_SOURCES = mbus-tcp-request-data.c
 
 mbus_tcp_request_data_multi_reply_LDFLAGS = -L$(top_builddir)/mbus
-mbus_tcp_request_data_multi_reply_LDADD	  = -lmbus -lm
+mbus_tcp_request_data_multi_reply_LDADD	  = -lmbus $(LIBS) $(LIBOBJS)
 mbus_tcp_request_data_multi_reply_SOURCES = mbus-tcp-request-data-multi-reply.c
 
 mbus_tcp_select_secondary_LDFLAGS = -L$(top_builddir)/mbus
-mbus_tcp_select_secondary_LDADD	  = -lmbus -lm
+mbus_tcp_select_secondary_LDADD	  = -lmbus $(LIBS) $(LIBOBJS)
 mbus_tcp_select_secondary_SOURCES = mbus-tcp-select-secondary.c
 
 mbus_tcp_scan_secondary_LDFLAGS = -L$(top_builddir)/mbus
-mbus_tcp_scan_secondary_LDADD	= -lmbus -lm
+mbus_tcp_scan_secondary_LDADD	= -lmbus $(LIBS) $(LIBOBJS)
 mbus_tcp_scan_secondary_SOURCES = mbus-tcp-scan-secondary.c
 
 mbus_tcp_raw_send_LDFLAGS = -L$(top_builddir)/mbus
-mbus_tcp_raw_send_LDADD	  = -lmbus -lm
+mbus_tcp_raw_send_LDADD	  = -lmbus $(LIBS) $(LIBOBJS)
 mbus_tcp_raw_send_SOURCES = mbus-tcp-raw-send.c
 
 mbus_tcp_application_reset_LDFLAGS = -L$(top_builddir)/mbus
-mbus_tcp_application_reset_LDADD   = -lmbus -lm
+mbus_tcp_application_reset_LDADD   = -lmbus $(LIBS) $(LIBOBJS)
 mbus_tcp_application_reset_SOURCES = mbus-tcp-application-reset.c
 
 # serial
 mbus_serial_scan_LDFLAGS	= -L$(top_builddir)/mbus
-mbus_serial_scan_LDADD		= -lmbus -lm
+mbus_serial_scan_LDADD		= -lmbus $(LIBS) $(LIBOBJS)
 mbus_serial_scan_SOURCES	= mbus-serial-scan.c 
 
 mbus_serial_request_data_LDFLAGS = -L$(top_builddir)/mbus
-mbus_serial_request_data_LDADD	 = -lmbus -lm
+mbus_serial_request_data_LDADD	 = -lmbus $(LIBS) $(LIBOBJS)
 mbus_serial_request_data_SOURCES = mbus-serial-request-data.c
 
 mbus_serial_request_data_multi_reply_LDFLAGS = -L$(top_builddir)/mbus
-mbus_serial_request_data_multi_reply_LDADD   = -lmbus -lm
+mbus_serial_request_data_multi_reply_LDADD   = -lmbus $(LIBS) $(LIBOBJS)
 mbus_serial_request_data_multi_reply_SOURCES = mbus-serial-request-data-multi-reply.c
 
 mbus_serial_select_secondary_LDFLAGS = -L$(top_builddir)/mbus
-mbus_serial_select_secondary_LDADD	 = -lmbus -lm
+mbus_serial_select_secondary_LDADD	 = -lmbus $(LIBS) $(LIBOBJS)
 mbus_serial_select_secondary_SOURCES = mbus-serial-select-secondary.c
 
 mbus_serial_scan_secondary_LDFLAGS = -L$(top_builddir)/mbus
-mbus_serial_scan_secondary_LDADD   = -lmbus -lm
+mbus_serial_scan_secondary_LDADD   = -lmbus $(LIBS) $(LIBOBJS)
 mbus_serial_scan_secondary_SOURCES = mbus-serial-scan-secondary.c
 
 mbus_serial_switch_baudrate_LDFLAGS = -L$(top_builddir)/mbus
-mbus_serial_switch_baudrate_LDADD   = -lmbus -lm
+mbus_serial_switch_baudrate_LDADD   = -lmbus $(LIBS) $(LIBOBJS)
 mbus_serial_switch_baudrate_SOURCES = mbus-serial-switch-baudrate.c
 
 mbus_serial_set_address_LDFLAGS = -L$(top_builddir)/mbus
-mbus_serial_set_address_LDADD   = -lmbus -lm
+mbus_serial_set_address_LDADD   = -lmbus $(LIBS) $(LIBOBJS)
 mbus_serial_set_address_SOURCES = mbus-serial-set-address.c
 
 mbus_serial_raw_send_LDFLAGS = -L$(top_builddir)/mbus
-mbus_serial_raw_send_LDADD   = -lmbus -lm
+mbus_serial_raw_send_LDADD   = -lmbus $(LIBS) $(LIBOBJS)
 mbus_serial_raw_send_SOURCES = mbus-serial-raw-send.c
 
 # man pages

@@ -28,8 +28,12 @@ AC_PROG_CC
 LT_INIT
 LT_CONFIG_LTDL_DIR([libltdl])
 
-AC_CHECK_HEADERS([termios.h])
-AC_CHECK_FUNCS([strdup malloc])
+AC_CHECK_HEADERS([math.h termios.h])
+AC_SEARCH_LIBS([pow], [m])
+AC_CHECK_FUNCS([strdup malloc pow])
+
+AC_REPLACE_FUNCS([pow])
+AC_CONFIG_LIBOBJ_DIR([lib])
 
 AC_OUTPUT
 

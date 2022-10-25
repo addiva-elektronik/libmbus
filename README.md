@@ -36,6 +36,13 @@ Building
     ./configure
     make
 
+> **Note:** libmbus relies on the math function `pow()` so when you link
+> it with your own program ensure you have `-lm`.  When using
+> `pkg-config` to query the system for appropriate `CFLAGS` and `LIBS`,
+> this is handled automatically for you.  However, when building on an
+> embedded system you may not have `pow()`, to this end a replacement
+> is available in `lib/pow.c`.
+
 
 Origin & References
 -------------------

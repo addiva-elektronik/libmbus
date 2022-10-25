@@ -21,7 +21,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-#include <math.h>
 
 /*@ignore@*/
 #define MBUS_ERROR(...) fprintf (stderr, __VA_ARGS__)
