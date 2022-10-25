@@ -288,11 +288,11 @@ typedef struct _mbus_data_secondary_address {
 
 
 //
-// for compatibility with non-gcc compilers:
+// for compatibility with pre-C99 and pre-C++11 compilers:
 //
-//#ifndef __PRETTY_FUNCTION__
-//#define __PRETTY_FUNCTION__ "libmbus"
-//#endif
+#ifndef __func__
+#define __func__ "libmbus"
+#endif
 
 //------------------------------------------------------------------------------
 // FRAME types

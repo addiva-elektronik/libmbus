@@ -62,7 +62,7 @@ mbus_serial_connect(mbus_handle *handle)
     // Use blocking read and handle it by serial port VMIN/VTIME setting
     if ((handle->fd = open(device, O_RDWR | O_NOCTTY)) < 0)
     {
-        fprintf(stderr, "%s: failed to open tty.", __PRETTY_FUNCTION__);
+        fprintf(stderr, "%s: failed to open tty.", __func__);
         return -1;
     }
 
@@ -93,10 +93,10 @@ mbus_serial_connect(mbus_handle *handle)
     cfsetospeed(term, B2400);
 
 #ifdef MBUS_SERIAL_DEBUG
-    printf("%s: t.c_cflag = %x\n", __PRETTY_FUNCTION__, term->c_cflag);
-    printf("%s: t.c_oflag = %x\n", __PRETTY_FUNCTION__, term->c_oflag);
-    printf("%s: t.c_iflag = %x\n", __PRETTY_FUNCTION__, term->c_iflag);
-    printf("%s: t.c_lflag = %x\n", __PRETTY_FUNCTION__, term->c_lflag);
+    printf("%s: t.c_cflag = %x\n", __func__, term->c_cflag);
+    printf("%s: t.c_oflag = %x\n", __func__, term->c_oflag);
+    printf("%s: t.c_iflag = %x\n", __func__, term->c_iflag);
+    printf("%s: t.c_lflag = %x\n", __func__, term->c_lflag);
 #endif
 
     tcsetattr(handle->fd, TCSANOW, term);
@@ -299,13 +299,13 @@ mbus_serial_send_frame(mbus_handle *handle, mbus_frame *frame)
 
     if ((len = mbus_frame_pack(frame, buff, sizeof(buff))) == -1)
     {
-        fprintf(stderr, "%s: mbus_frame_pack failed\n", __PRETTY_FUNCTION__);
+        fprintf(stderr, "%s: mbus_frame_pack failed\n", __func__);
         return -1;
     }
 
 #ifdef MBUS_SERIAL_DEBUG
     // if debug, dump in HEX form to stdout what we write to the serial port
-    printf("%s: Dumping M-Bus frame [%d bytes]: ", __PRETTY_FUNCTION__, len);
+    printf("%s: Dumping M-Bus frame [%d bytes]: ", __func__, len);
     int i;
     for (i = 0; i < len; i++)
     {
@@ -324,7 +324,7 @@ mbus_serial_send_frame(mbus_handle *handle, mbus_frame *frame)
     }
     else
     {
-        fprintf(stderr, "%s: Failed to write frame to socket (ret = %d: %s)\n", __PRETTY_FUNCTION__, ret, strerror(errno));
+        fprintf(stderr, "%s: Failed to write frame to socket (ret = %d: %s)\n", __func__, ret, strerror(errno));
         return -1;
     }
 
@@ -348,14 +348,14 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
 
     if (handle == NULL || frame == NULL)
     {
-        fprintf(stderr, "%s: Invalid parameter.\n", __PRETTY_FUNCTION__);
+        fprintf(stderr, "%s: Invalid parameter.\n", __func__);
         return MBUS_RECV_RESULT_ERROR;
     }
 
     // Make sure serial connection is open
     if (isatty(handle->fd) == 0)
     {
-        fprintf(stderr, "%s: Serial connection is not available.\n", __PRETTY_FUNCTION__);
+        fprintf(stderr, "%s: Serial connection is not available.\n", __func__);
         return MBUS_RECV_RESULT_ERROR;
     }
 
@@ -375,16 +375,16 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
             return MBUS_RECV_RESULT_ERROR;
         }
 
-        //printf("%s: Attempt to read %d bytes [len = %d]\n", __PRETTY_FUNCTION__, remaining, len);
+        //printf("%s: Attempt to read %d bytes [len = %d]\n", __func__, remaining, len);
 
         if ((nread = read(handle->fd, &buff[len], remaining)) == -1)
         {
        //     fprintf(stderr, "%s: aborting recv frame (remaining = %d, len = %d, nread = %d)\n",
-         //          __PRETTY_FUNCTION__, remaining, len, nread);
+         //          __func__, remaining, len, nread);
             return MBUS_RECV_RESULT_ERROR;
         }
 
-//   printf("%s: Got %d byte [remaining %d, len %d]\n", __PRETTY_FUNCTION__, nread, remaining, len);
+//   printf("%s: Got %d byte [remaining %d, len %d]\n", __func__, nread, remaining, len);
 
         if (nread == 0)
         {
@@ -393,7 +393,7 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
             if (timeouts >= 3)
             {
                 // abort to avoid endless loop
-                fprintf(stderr, "%s: Timeout\n", __PRETTY_FUNCTION__);
+                fprintf(stderr, "%s: Timeout\n", __func__);
                 break;
             }
         }
@@ -423,13 +423,13 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
     if (remaining != 0)
     {
         // Would be OK when e.g. scanning the bus, otherwise it is a failure.
-        // printf("%s: M-Bus layer failed to receive complete data.\n", __PRETTY_FUNCTION__);
+        // printf("%s: M-Bus layer failed to receive complete data.\n", __func__);
         return MBUS_RECV_RESULT_INVALID;
     }
 
     if (len == -1)
     {
-        fprintf(stderr, "%s: M-Bus layer failed to parse data.\n", __PRETTY_FUNCTION__);
+        fprintf(stderr, "%s: M-Bus layer failed to parse data.\n", __func__);
         return MBUS_RECV_RESULT_ERROR;
     }
 

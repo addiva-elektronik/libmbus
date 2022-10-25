@@ -106,17 +106,17 @@ main(int argc, char **argv)
 
         if (ret == MBUS_PROBE_COLLISION)
         {
-            fprintf(stderr, "%s: Error: The address mask [%s] matches more than one device.\n", __PRETTY_FUNCTION__, addr_str);
+            fprintf(stderr, "%s: Error: The address mask [%s] matches more than one device.\n", __func__, addr_str);
             return 1;
         }
         else if (ret == MBUS_PROBE_NOTHING)
         {
-            fprintf(stderr, "%s: Error: The selected secondary address does not match any device [%s].\n", __PRETTY_FUNCTION__, addr_str);
+            fprintf(stderr, "%s: Error: The selected secondary address does not match any device [%s].\n", __func__, addr_str);
             return 1;
         }
         else if (ret == MBUS_PROBE_ERROR)
         {
-            fprintf(stderr, "%s: Error: Failed to select secondary address [%s].\n", __PRETTY_FUNCTION__, addr_str);
+            fprintf(stderr, "%s: Error: Failed to select secondary address [%s].\n", __func__, addr_str);
             return 1;
         }
         address = MBUS_ADDRESS_NETWORK_LAYER;
@@ -134,7 +134,7 @@ main(int argc, char **argv)
     {
         if ((fp = fopen(file, "r")) == NULL)
         {
-            fprintf(stderr, "%s: failed to open '%s'\n", __PRETTY_FUNCTION__, file);
+            fprintf(stderr, "%s: failed to open '%s'\n", __func__, file);
             return 1;
         }
     }

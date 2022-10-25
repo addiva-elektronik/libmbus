@@ -3167,7 +3167,7 @@ mbus_data_record_decode(mbus_data_record *record)
                 snprintf(buff, sizeof(buff), "%d", int_val);
 
                 if (debug)
-                    printf("%s: DIF 0x%.2x was decoded using 1 byte integer\n", __PRETTY_FUNCTION__, record->drh.dib.dif);
+                    printf("%s: DIF 0x%.2x was decoded using 1 byte integer\n", __func__, record->drh.dib.dif);
 
                 break;
 
@@ -3188,7 +3188,7 @@ mbus_data_record_decode(mbus_data_record *record)
                     mbus_data_int_decode(record->data, 2, &int_val);
                     snprintf(buff, sizeof(buff), "%d", int_val);
                     if (debug)
-                        printf("%s: DIF 0x%.2x was decoded using 2 byte integer\n", __PRETTY_FUNCTION__, record->drh.dib.dif);
+                        printf("%s: DIF 0x%.2x was decoded using 2 byte integer\n", __func__, record->drh.dib.dif);
 
                 }
 
@@ -3201,7 +3201,7 @@ mbus_data_record_decode(mbus_data_record *record)
                 snprintf(buff, sizeof(buff), "%d", int_val);
 
                 if (debug)
-                    printf("%s: DIF 0x%.2x was decoded using 3 byte integer\n", __PRETTY_FUNCTION__, record->drh.dib.dif);
+                    printf("%s: DIF 0x%.2x was decoded using 3 byte integer\n", __func__, record->drh.dib.dif);
 
                 break;
 
@@ -3230,7 +3230,7 @@ mbus_data_record_decode(mbus_data_record *record)
                 }
 
                 if (debug)
-                    printf("%s: DIF 0x%.2x was decoded using 4 byte integer\n", __PRETTY_FUNCTION__, record->drh.dib.dif);
+                    printf("%s: DIF 0x%.2x was decoded using 4 byte integer\n", __func__, record->drh.dib.dif);
 
                 break;
 
@@ -3241,7 +3241,7 @@ mbus_data_record_decode(mbus_data_record *record)
                 snprintf(buff, sizeof(buff), "%f", float_val);
 
                 if (debug)
-                    printf("%s: DIF 0x%.2x was decoded using 4 byte Real\n", __PRETTY_FUNCTION__, record->drh.dib.dif);
+                    printf("%s: DIF 0x%.2x was decoded using 4 byte Real\n", __func__, record->drh.dib.dif);
 
                 break;
 
@@ -3270,7 +3270,7 @@ mbus_data_record_decode(mbus_data_record *record)
                 }
 
                 if (debug)
-                    printf("%s: DIF 0x%.2x was decoded using 6 byte integer\n", __PRETTY_FUNCTION__, record->drh.dib.dif);
+                    printf("%s: DIF 0x%.2x was decoded using 6 byte integer\n", __func__, record->drh.dib.dif);
 
                 break;
 
@@ -3281,7 +3281,7 @@ mbus_data_record_decode(mbus_data_record *record)
                 snprintf(buff, sizeof(buff), "%lld", long_long_val);
 
                 if (debug)
-                    printf("%s: DIF 0x%.2x was decoded using 8 byte integer\n", __PRETTY_FUNCTION__, record->drh.dib.dif);
+                    printf("%s: DIF 0x%.2x was decoded using 8 byte integer\n", __func__, record->drh.dib.dif);
 
                 break;
 
@@ -3293,7 +3293,7 @@ mbus_data_record_decode(mbus_data_record *record)
                 snprintf(buff, sizeof(buff), "%X", int_val);
 
                 if (debug)
-                    printf("%s: DIF 0x%.2x was decoded using 2 digit BCD\n", __PRETTY_FUNCTION__, record->drh.dib.dif);
+                    printf("%s: DIF 0x%.2x was decoded using 2 digit BCD\n", __func__, record->drh.dib.dif);
 
                 break;
 
@@ -3303,7 +3303,7 @@ mbus_data_record_decode(mbus_data_record *record)
                 snprintf(buff, sizeof(buff), "%X", int_val);
 
                 if (debug)
-                    printf("%s: DIF 0x%.2x was decoded using 4 digit BCD\n", __PRETTY_FUNCTION__, record->drh.dib.dif);
+                    printf("%s: DIF 0x%.2x was decoded using 4 digit BCD\n", __func__, record->drh.dib.dif);
 
                 break;
 
@@ -3313,7 +3313,7 @@ mbus_data_record_decode(mbus_data_record *record)
                 snprintf(buff, sizeof(buff), "%X", int_val);
 
                 if (debug)
-                    printf("%s: DIF 0x%.2x was decoded using 6 digit BCD\n", __PRETTY_FUNCTION__, record->drh.dib.dif);
+                    printf("%s: DIF 0x%.2x was decoded using 6 digit BCD\n", __func__, record->drh.dib.dif);
 
                 break;
 
@@ -3323,7 +3323,7 @@ mbus_data_record_decode(mbus_data_record *record)
                 snprintf(buff, sizeof(buff), "%X", int_val);
 
                 if (debug)
-                    printf("%s: DIF 0x%.2x was decoded using 8 digit BCD\n", __PRETTY_FUNCTION__, record->drh.dib.dif);
+                    printf("%s: DIF 0x%.2x was decoded using 8 digit BCD\n", __func__, record->drh.dib.dif);
 
                 break;
 
@@ -3333,7 +3333,7 @@ mbus_data_record_decode(mbus_data_record *record)
                 snprintf(buff, sizeof(buff), "%llX", long_long_val);
 
                 if (debug)
-                    printf("%s: DIF 0x%.2x was decoded using 12 digit BCD\n", __PRETTY_FUNCTION__, record->drh.dib.dif);
+                    printf("%s: DIF 0x%.2x was decoded using 12 digit BCD\n", __func__, record->drh.dib.dif);
 
                 break;
 
@@ -3542,10 +3542,10 @@ mbus_parse(mbus_frame *frame, unsigned char *data, size_t data_size)
         frame->next = NULL;
 
         if (parse_debug)
-            printf("%s: Attempting to parse binary data [size = %zu]\n", __PRETTY_FUNCTION__, data_size);
+            printf("%s: Attempting to parse binary data [size = %zu]\n", __func__, data_size);
 
         if (parse_debug)
-            printf("%s: ", __PRETTY_FUNCTION__);
+            printf("%s: ", __func__);
 
         for (i = 0; i < data_size && parse_debug; i++)
         {
@@ -3553,7 +3553,7 @@ mbus_parse(mbus_frame *frame, unsigned char *data, size_t data_size)
         }
 
         if (parse_debug)
-            printf("\n%s: done.\n", __PRETTY_FUNCTION__);
+            printf("\n%s: done.\n", __func__);
 
         switch (data[0])
         {
@@ -4203,7 +4203,7 @@ mbus_frame_internal_pack(mbus_frame *frame, mbus_frame_data *frame_data)
             {
                 // pack DIF
                 if (parse_debug)
-                    printf("%s: packing DIF [%zu]", __PRETTY_FUNCTION__, frame->data_size);
+                    printf("%s: packing DIF [%zu]", __func__, frame->data_size);
                 frame->data[frame->data_size++] = record->drh.dib.dif;
                 for (j = 0; j < record->drh.dib.ndife; j++)
                 {
@@ -4212,7 +4212,7 @@ mbus_frame_internal_pack(mbus_frame *frame, mbus_frame_data *frame_data)
 
                 // pack VIF
                 if (parse_debug)
-                    printf("%s: packing VIF [%zu]", __PRETTY_FUNCTION__, frame->data_size);
+                    printf("%s: packing VIF [%zu]", __func__, frame->data_size);
                 frame->data[frame->data_size++] = record->drh.vib.vif;
                 for (j = 0; j < record->drh.vib.nvife; j++)
                 {
@@ -4221,7 +4221,7 @@ mbus_frame_internal_pack(mbus_frame *frame, mbus_frame_data *frame_data)
 
                 // pack data
                 if (parse_debug)
-                    printf("%s: packing data [%zu : %zu]", __PRETTY_FUNCTION__, frame->data_size, record->data_len);
+                    printf("%s: packing data [%zu : %zu]", __func__, frame->data_size, record->data_len);
                 for (j = 0; j < record->data_len; j++)
                 {
                     frame->data[frame->data_size++] = record->data[j];
@@ -4272,7 +4272,7 @@ mbus_frame_print(mbus_frame *frame)
             return -2;
         }
 
-        printf("%s: Dumping M-Bus frame [type %d, %d bytes]: ", __PRETTY_FUNCTION__, iter->type, len);
+        printf("%s: Dumping M-Bus frame [type %d, %d bytes]: ", __func__, iter->type, len);
         for (i = 0; i < len; i++)
         {
             printf("%.2X ", data_buff[i]);
@@ -4320,20 +4320,20 @@ mbus_data_variable_header_print(mbus_data_variable_header *header)
 {
     if (header)
     {
-        printf("%s: ID           = %llX\n", __PRETTY_FUNCTION__,
+        printf("%s: ID           = %llX\n", __func__,
                mbus_data_bcd_decode_hex(header->id_bcd, 4));
 
-        printf("%s: Manufacturer = 0x%.2X%.2X\n", __PRETTY_FUNCTION__,
+        printf("%s: Manufacturer = 0x%.2X%.2X\n", __func__,
                header->manufacturer[1], header->manufacturer[0]);
 
-        printf("%s: Manufacturer = %s\n", __PRETTY_FUNCTION__,
+        printf("%s: Manufacturer = %s\n", __func__,
                mbus_decode_manufacturer(header->manufacturer[0], header->manufacturer[1]));
 
-        printf("%s: Version      = 0x%.2X\n", __PRETTY_FUNCTION__, header->version);
-        printf("%s: Medium       = %s (0x%.2X)\n", __PRETTY_FUNCTION__, mbus_data_variable_medium_lookup(header->medium), header->medium);
-        printf("%s: Access #     = 0x%.2X\n", __PRETTY_FUNCTION__, header->access_no);
-        printf("%s: Status       = 0x%.2X\n", __PRETTY_FUNCTION__, header->status);
-        printf("%s: Signature    = 0x%.2X%.2X\n", __PRETTY_FUNCTION__,
+        printf("%s: Version      = 0x%.2X\n", __func__, header->version);
+        printf("%s: Medium       = %s (0x%.2X)\n", __func__, mbus_data_variable_medium_lookup(header->medium), header->medium);
+        printf("%s: Access #     = 0x%.2X\n", __func__, header->access_no);
+        printf("%s: Status       = 0x%.2X\n", __func__, header->status);
+        printf("%s: Signature    = 0x%.2X%.2X\n", __func__,
                header->signature[1], header->signature[0]);
 
     }
@@ -4366,7 +4366,7 @@ mbus_data_variable_print(mbus_data_variable *data)
             if ((record->drh.dib.dif == MBUS_DIB_DIF_MANUFACTURER_SPECIFIC) ||
                 (record->drh.dib.dif == MBUS_DIB_DIF_MORE_RECORDS_FOLLOW)) //MBUS_DIB_DIF_VENDOR_SPECIFIC
             {
-                printf("%s: VENDOR DATA [size=%zu] = ", __PRETTY_FUNCTION__, record->data_len);
+                printf("%s: VENDOR DATA [size=%zu] = ", __func__, record->data_len);
                 for (j = 0; j < record->data_len; j++)
                 {
                     printf("%.2X ", record->data[j]);
@@ -4375,7 +4375,7 @@ mbus_data_variable_print(mbus_data_variable *data)
 
                 if (record->drh.dib.dif == MBUS_DIB_DIF_MORE_RECORDS_FOLLOW)
                 {
-                  printf("%s: More records follow in next telegram\n", __PRETTY_FUNCTION__);
+                  printf("%s: More records follow in next telegram\n", __func__);
                 }
                 continue;
             }
@@ -4424,33 +4424,33 @@ mbus_data_fixed_print(mbus_data_fixed *data)
 
     if (data)
     {
-        printf("%s: ID       = %llX\n", __PRETTY_FUNCTION__, mbus_data_bcd_decode_hex(data->id_bcd, 4));
-        printf("%s: Access # = 0x%.2X\n", __PRETTY_FUNCTION__, data->tx_cnt);
-        printf("%s: Status   = 0x%.2X\n", __PRETTY_FUNCTION__, data->status);
-        printf("%s: Function = %s\n", __PRETTY_FUNCTION__, mbus_data_fixed_function(data->status));
+        printf("%s: ID       = %llX\n", __func__, mbus_data_bcd_decode_hex(data->id_bcd, 4));
+        printf("%s: Access # = 0x%.2X\n", __func__, data->tx_cnt);
+        printf("%s: Status   = 0x%.2X\n", __func__, data->status);
+        printf("%s: Function = %s\n", __func__, mbus_data_fixed_function(data->status));
 
-        printf("%s: Medium1  = %s\n", __PRETTY_FUNCTION__, mbus_data_fixed_medium(data));
-        printf("%s: Unit1    = %s\n", __PRETTY_FUNCTION__, mbus_data_fixed_unit(data->cnt1_type));
+        printf("%s: Medium1  = %s\n", __func__, mbus_data_fixed_medium(data));
+        printf("%s: Unit1    = %s\n", __func__, mbus_data_fixed_unit(data->cnt1_type));
         if ((data->status & MBUS_DATA_FIXED_STATUS_FORMAT_MASK) == MBUS_DATA_FIXED_STATUS_FORMAT_BCD)
         {
-            printf("%s: Counter1 = %llX\n", __PRETTY_FUNCTION__, mbus_data_bcd_decode_hex(data->cnt1_val, 4));
+            printf("%s: Counter1 = %llX\n", __func__, mbus_data_bcd_decode_hex(data->cnt1_val, 4));
         }
         else
         {
             mbus_data_int_decode(data->cnt1_val, 4, &val);
-            printf("%s: Counter1 = %d\n", __PRETTY_FUNCTION__, val);
+            printf("%s: Counter1 = %d\n", __func__, val);
         }
 
-        printf("%s: Medium2  = %s\n", __PRETTY_FUNCTION__, mbus_data_fixed_medium(data));
-        printf("%s: Unit2    = %s\n", __PRETTY_FUNCTION__, mbus_data_fixed_unit(data->cnt2_type));
+        printf("%s: Medium2  = %s\n", __func__, mbus_data_fixed_medium(data));
+        printf("%s: Unit2    = %s\n", __func__, mbus_data_fixed_unit(data->cnt2_type));
         if ((data->status & MBUS_DATA_FIXED_STATUS_FORMAT_MASK) == MBUS_DATA_FIXED_STATUS_FORMAT_BCD)
         {
-            printf("%s: Counter2 = %llX\n", __PRETTY_FUNCTION__, mbus_data_bcd_decode_hex(data->cnt2_val, 4));
+            printf("%s: Counter2 = %llX\n", __func__, mbus_data_bcd_decode_hex(data->cnt2_val, 4));
         }
         else
         {
             mbus_data_int_decode(data->cnt2_val, 4, &val);
-            printf("%s: Counter2 = %d\n", __PRETTY_FUNCTION__, val);
+            printf("%s: Counter2 = %d\n", __func__, val);
         }
     }
 
@@ -4490,7 +4490,7 @@ mbus_hex_dump(const char *label, const char *buff, size_t len)
 int
 mbus_data_error_print(int error)
 {
-    printf("%s: Error = %d\n", __PRETTY_FUNCTION__, error);
+    printf("%s: Error = %d\n", __func__, error);
 
     return -1;
 }
@@ -5141,7 +5141,7 @@ mbus_frame_get_secondary_address(mbus_frame *frame)
 
     if (!frame)
     {
-        snprintf(error_str, sizeof(error_str), "%s: missing argument.", __PRETTY_FUNCTION__);
+        snprintf(error_str, sizeof(error_str), "%s: missing argument.", __func__);
 	return NULL;
     }
 
@@ -5150,7 +5150,7 @@ mbus_frame_get_secondary_address(mbus_frame *frame)
     {
         snprintf(error_str, sizeof(error_str),
                  "%s: Failed to allocate data structure [%p, %p].",
-                  __PRETTY_FUNCTION__, frame, data);
+                  __func__, frame, data);
         return NULL;
     }
 
@@ -5192,13 +5192,13 @@ mbus_frame_select_secondary_pack(mbus_frame *frame, char *address)
 
     if (frame == NULL || address == NULL)
     {
-        snprintf(error_str, sizeof(error_str), "%s: frame or address arguments are NULL.", __PRETTY_FUNCTION__);
+        snprintf(error_str, sizeof(error_str), "%s: frame or address arguments are NULL.", __func__);
         return -1;
     }
 
     if (mbus_is_secondary_address(address) == 0)
     {
-        snprintf(error_str, sizeof(error_str), "%s: address is invalid.", __PRETTY_FUNCTION__);
+        snprintf(error_str, sizeof(error_str), "%s: address is invalid.", __func__);
         return -1;
     }
 

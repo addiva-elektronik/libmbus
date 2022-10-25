@@ -22,7 +22,7 @@ static int
 init_slaves(mbus_handle *handle)
 {
     if (debug)
-        printf("%s: debug: sending init frame #1\n", __PRETTY_FUNCTION__);
+        printf("%s: debug: sending init frame #1\n", __func__);
 
     if (mbus_send_ping_frame(handle, MBUS_ADDRESS_NETWORK_LAYER, 1) == -1)
     {
@@ -34,7 +34,7 @@ init_slaves(mbus_handle *handle)
     //
 
     if (debug)
-        printf("%s: debug: sending init frame #2\n", __PRETTY_FUNCTION__);
+        printf("%s: debug: sending init frame #2\n", __func__);
 
     if (mbus_send_ping_frame(handle, MBUS_ADDRESS_NETWORK_LAYER, 1) == -1)
     {
@@ -166,21 +166,21 @@ main(int argc, char **argv)
 
         if (ret == MBUS_PROBE_COLLISION)
         {
-            fprintf(stderr, "%s: Error: The address mask [%s] matches more than one device.\n", __PRETTY_FUNCTION__, old_address_str);
+            fprintf(stderr, "%s: Error: The address mask [%s] matches more than one device.\n", __func__, old_address_str);
             mbus_disconnect(handle);
             mbus_context_free(handle);
             return 1;
         }
         else if (ret == MBUS_PROBE_NOTHING)
         {
-            fprintf(stderr, "%s: Error: The selected secondary address does not match any device [%s].\n", __PRETTY_FUNCTION__, old_address_str);
+            fprintf(stderr, "%s: Error: The selected secondary address does not match any device [%s].\n", __func__, old_address_str);
             mbus_disconnect(handle);
             mbus_context_free(handle);
             return 1;
         }
         else if (ret == MBUS_PROBE_ERROR)
         {
-            fprintf(stderr, "%s: Error: Failed to select secondary address [%s].\n", __PRETTY_FUNCTION__, old_address_str);
+            fprintf(stderr, "%s: Error: Failed to select secondary address [%s].\n", __func__, old_address_str);
             mbus_disconnect(handle);
             mbus_context_free(handle);
             return 1;

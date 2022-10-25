@@ -810,7 +810,7 @@ int mbus_fixed_normalize(int medium_unit, long medium_value, char **unit_out, do
 
     if (unit_out == NULL || value_out == NULL || quantity_out == NULL)
     {
-        MBUS_ERROR("%s: Invalid parameter.\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: Invalid parameter.\n", __func__);
         return -1;
     }
 
@@ -1136,7 +1136,7 @@ mbus_vif_unit_normalize(int vif, double value, char **unit_out, double *value_ou
 
     if (unit_out == NULL || value_out == NULL || quantity_out == NULL)
     {
-        MBUS_ERROR("%s: Invalid parameter.\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: Invalid parameter.\n", __func__);
         return -1;
     }
 
@@ -1151,7 +1151,7 @@ mbus_vif_unit_normalize(int vif, double value, char **unit_out, double *value_ou
         }
     }
 
-    MBUS_ERROR("%s: Unknown VIF 0x%03X\n", __PRETTY_FUNCTION__, newVif);
+    MBUS_ERROR("%s: Unknown VIF 0x%03X\n", __func__, newVif);
     *unit_out = strdup("Unknown (VIF=0x%.02X)");
     *quantity_out = strdup("Unknown");
     *value_out = 0.0;
@@ -1166,24 +1166,24 @@ mbus_vib_unit_normalize(mbus_value_information_block *vib, double value, char **
 
     if (vib == NULL || unit_out == NULL || value_out == NULL || quantity_out == NULL)
     {
-        MBUS_ERROR("%s: Invalid parameter.\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: Invalid parameter.\n", __func__);
         return -1;
     }
 
-    MBUS_DEBUG("%s: vib_unit_normalize - VIF=0x%02X\n", __PRETTY_FUNCTION__, vib->vif);
+    MBUS_DEBUG("%s: vib_unit_normalize - VIF=0x%02X\n", __func__, vib->vif);
 
     if (vib->vif == 0xFD) /* first type of VIF extention: see table 8.4.4 a */
     {
         if (vib->nvife == 0)
         {
-            MBUS_ERROR("%s: Missing VIF extension\n", __PRETTY_FUNCTION__);
+            MBUS_ERROR("%s: Missing VIF extension\n", __func__);
             return -1;
         }
 
         code = ((vib->vife[0]) & MBUS_DIB_VIF_WITHOUT_EXTENSION) | 0x100;
         if (mbus_vif_unit_normalize(code, value, unit_out, value_out, quantity_out) != 0)
         {
-            MBUS_ERROR("%s: Error mbus_vif_unit_normalize\n", __PRETTY_FUNCTION__);
+            MBUS_ERROR("%s: Error mbus_vif_unit_normalize\n", __func__);
             return -1;
         }
     } else {
@@ -1191,14 +1191,14 @@ mbus_vib_unit_normalize(mbus_value_information_block *vib, double value, char **
         {
             if (vib->nvife == 0)
             {
-                MBUS_ERROR("%s: Missing VIF extension\n", __PRETTY_FUNCTION__);
+                MBUS_ERROR("%s: Missing VIF extension\n", __func__);
                 return -1;
             }
 
             code = ((vib->vife[0]) & MBUS_DIB_VIF_WITHOUT_EXTENSION) | 0x200;
             if (0 != mbus_vif_unit_normalize(code, value, unit_out, value_out, quantity_out))
             {
-                MBUS_ERROR("%s: Error mbus_vif_unit_normalize\n", __PRETTY_FUNCTION__);
+                MBUS_ERROR("%s: Error mbus_vif_unit_normalize\n", __func__);
                 return -1;
             }
         }
@@ -1215,7 +1215,7 @@ mbus_vib_unit_normalize(mbus_value_information_block *vib, double value, char **
             code = (vib->vif) & MBUS_DIB_VIF_WITHOUT_EXTENSION;
             if (0 != mbus_vif_unit_normalize(code, value, unit_out, value_out, quantity_out))
             {
-                MBUS_ERROR("%s: Error mbus_vif_unit_normalize\n", __PRETTY_FUNCTION__);
+                MBUS_ERROR("%s: Error mbus_vif_unit_normalize\n", __func__);
                 return -1;
             }
         }
@@ -1263,7 +1263,7 @@ mbus_record_new()
 
     if (!(record = (mbus_record *) malloc(sizeof(mbus_record))))
     {
-        MBUS_ERROR("%s: memory allocation error\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: memory allocation error\n", __func__);
         return NULL;
     }
 
@@ -1320,7 +1320,7 @@ mbus_parse_fixed_record(char status_byte, char medium_unit, unsigned char *data)
 
     if (!(record = mbus_record_new()))
     {
-        MBUS_ERROR("%s: memory allocation error\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: memory allocation error\n", __func__);
         return NULL;
     }
 
@@ -1329,7 +1329,7 @@ mbus_parse_fixed_record(char status_byte, char medium_unit, unsigned char *data)
 
     if (record->function_medium == NULL)
     {
-        MBUS_ERROR("%s: memory allocation error\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: memory allocation error\n", __func__);
         mbus_record_free(record);
         return NULL;
     }
@@ -1367,13 +1367,13 @@ mbus_parse_variable_record(mbus_data_record *data)
 
     if (data == NULL)
     {
-        MBUS_ERROR("%s: Invalid record.\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: Invalid record.\n", __func__);
         return NULL;
     }
 
     if (!(record = mbus_record_new()))
     {
-        MBUS_ERROR("%s: memory allocation error\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: memory allocation error\n", __func__);
         return NULL;
     }
 
@@ -1395,7 +1395,7 @@ mbus_parse_variable_record(mbus_data_record *data)
 
         if (record->function_medium == NULL)
         {
-            MBUS_ERROR("%s: memory allocation error\n", __PRETTY_FUNCTION__);
+            MBUS_ERROR("%s: memory allocation error\n", __func__);
             mbus_record_free(record);
             return NULL;
         }
@@ -1405,7 +1405,7 @@ mbus_parse_variable_record(mbus_data_record *data)
 
         if (mbus_variable_value_decode(data, &value_out_real, &value_out_str, &value_out_str_size) != 0)
         {
-            MBUS_ERROR("%s: problem with mbus_variable_value_decode\n", __PRETTY_FUNCTION__);
+            MBUS_ERROR("%s: problem with mbus_variable_value_decode\n", __func__);
             mbus_record_free(record);
             return NULL;
         }
@@ -1428,7 +1428,7 @@ mbus_parse_variable_record(mbus_data_record *data)
 
         if (record->function_medium == NULL)
         {
-            MBUS_ERROR("%s: memory allocation error\n", __PRETTY_FUNCTION__);
+            MBUS_ERROR("%s: memory allocation error\n", __func__);
             mbus_record_free(record);
             return NULL;
         }
@@ -1437,7 +1437,7 @@ mbus_parse_variable_record(mbus_data_record *data)
 
         if (mbus_variable_value_decode(data, &value_out_real, &value_out_str, &value_out_str_size) != 0)
         {
-            MBUS_ERROR("%s: problem with mbus_variable_value_decode\n", __PRETTY_FUNCTION__);
+            MBUS_ERROR("%s: problem with mbus_variable_value_decode\n", __func__);
             mbus_record_free(record);
             return NULL;
         }
@@ -1445,7 +1445,7 @@ mbus_parse_variable_record(mbus_data_record *data)
 
         if (mbus_vib_unit_normalize(&(data->drh.vib), value_out_real, &(record->unit), &real_val, &(record->quantity)) != 0)
         {
-            MBUS_ERROR("%s: problem with mbus_vib_unit_normalize\n", __PRETTY_FUNCTION__);
+            MBUS_ERROR("%s: problem with mbus_vib_unit_normalize\n", __func__);
             mbus_record_free(record);
             record = NULL;
             return NULL;
@@ -1595,13 +1595,13 @@ mbus_context_serial(const char *device)
 
     if ((handle = (mbus_handle *) malloc(sizeof(mbus_handle))) == NULL)
     {
-        MBUS_ERROR("%s: Failed to allocate handle.\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: Failed to allocate handle.\n", __func__);
         return NULL;
     }
 
     if ((serial_data = (mbus_serial_data *)malloc(sizeof(mbus_serial_data))) == NULL)
     {
-        snprintf(error_str, sizeof(error_str), "%s: failed to allocate memory for handle\n", __PRETTY_FUNCTION__);
+        snprintf(error_str, sizeof(error_str), "%s: failed to allocate memory for handle\n", __func__);
         mbus_error_str_set(error_str);
         free(handle);
         return NULL;
@@ -1624,7 +1624,7 @@ mbus_context_serial(const char *device)
 
     if ((serial_data->device = strdup(device)) == NULL)
     {
-        snprintf(error_str, sizeof(error_str), "%s: failed to allocate memory for device\n", __PRETTY_FUNCTION__);
+        snprintf(error_str, sizeof(error_str), "%s: failed to allocate memory for device\n", __func__);
         mbus_error_str_set(error_str);
         free(serial_data);
         free(handle);
@@ -1643,13 +1643,13 @@ mbus_context_tcp(const char *host, uint16_t port)
 
     if ((handle = (mbus_handle *) malloc(sizeof(mbus_handle))) == NULL)
     {
-        MBUS_ERROR("%s: Failed to allocate handle.\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: Failed to allocate handle.\n", __func__);
         return NULL;
     }
 
     if ((tcp_data = (mbus_tcp_data *)malloc(sizeof(mbus_tcp_data))) == NULL)
     {
-        snprintf(error_str, sizeof(error_str), "%s: failed to allocate memory for handle\n", __PRETTY_FUNCTION__);
+        snprintf(error_str, sizeof(error_str), "%s: failed to allocate memory for handle\n", __func__);
         mbus_error_str_set(error_str);
         free(handle);
         return NULL;
@@ -1673,7 +1673,7 @@ mbus_context_tcp(const char *host, uint16_t port)
     tcp_data->port = port;
     if ((tcp_data->host = strdup(host)) == NULL)
     {
-        snprintf(error_str, sizeof(error_str), "%s: failed to allocate memory for host\n", __PRETTY_FUNCTION__);
+        snprintf(error_str, sizeof(error_str), "%s: failed to allocate memory for host\n", __func__);
         mbus_error_str_set(error_str);
         free(tcp_data);
         free(handle);
@@ -1698,7 +1698,7 @@ mbus_connect(mbus_handle * handle)
 {
     if (handle == NULL)
     {
-        MBUS_ERROR("%s: Invalid M-Bus handle for disconnect.\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: Invalid M-Bus handle for disconnect.\n", __func__);
         return -1;
     }
 
@@ -1710,7 +1710,7 @@ mbus_disconnect(mbus_handle * handle)
 {
     if (handle == NULL)
     {
-        MBUS_ERROR("%s: Invalid M-Bus handle for disconnect.\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: Invalid M-Bus handle for disconnect.\n", __func__);
         return -1;
     }
 
@@ -1722,7 +1722,7 @@ mbus_context_set_option(mbus_handle * handle, mbus_context_option option, long v
 {
     if (handle == NULL)
     {
-        MBUS_ERROR("%s: Invalid M-Bus handle to set option.\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: Invalid M-Bus handle to set option.\n", __func__);
         return -1;
     }
 
@@ -1763,13 +1763,13 @@ mbus_recv_frame(mbus_handle * handle, mbus_frame *frame)
 
     if (handle == NULL)
     {
-        MBUS_ERROR("%s: Invalid M-Bus handle for receive.\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: Invalid M-Bus handle for receive.\n", __func__);
         return MBUS_RECV_RESULT_ERROR;
     }
 
     if (frame == NULL)
     {
-        MBUS_ERROR("%s: Invalid frame.\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: Invalid frame.\n", __func__);
         return MBUS_RECV_RESULT_ERROR;
     }
 
@@ -1822,7 +1822,7 @@ mbus_send_frame(mbus_handle * handle, mbus_frame *frame)
 {
     if (handle == NULL)
     {
-        MBUS_ERROR("%s: Invalid M-Bus handle for send.\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: Invalid M-Bus handle for send.\n", __func__);
         return 0;
     }
 
@@ -1843,14 +1843,14 @@ mbus_send_select_frame(mbus_handle * handle, const char *secondary_addr_str)
 
     if (mbus_frame_select_secondary_pack(frame, (char*) secondary_addr_str) == -1)
     {
-        MBUS_ERROR("%s: Failed to pack selection mbus frame.\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: Failed to pack selection mbus frame.\n", __func__);
         mbus_frame_free(frame);
         return -1;
     }
 
     if (mbus_send_frame(handle, frame) == -1)
     {
-        MBUS_ERROR("%s: Failed to send mbus frame.\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: Failed to send mbus frame.\n", __func__);
         mbus_frame_free(frame);
         return -1;
     }
@@ -1872,7 +1872,7 @@ mbus_send_switch_baudrate_frame(mbus_handle * handle, int address, long baudrate
 
     if (mbus_is_primary_address(address) == 0)
     {
-        MBUS_ERROR("%s: invalid address %d\n", __PRETTY_FUNCTION__, address);
+        MBUS_ERROR("%s: invalid address %d\n", __func__, address);
         return -1;
     }
 
@@ -1903,7 +1903,7 @@ mbus_send_switch_baudrate_frame(mbus_handle * handle, int address, long baudrate
         control_information = MBUS_CONTROL_INFO_SET_BAUDRATE_38400;
         break;
       default:
-        MBUS_ERROR("%s: invalid baudrate %ld\n", __PRETTY_FUNCTION__, baudrate);
+        MBUS_ERROR("%s: invalid baudrate %ld\n", __func__, baudrate);
         return -1;
     }
 
@@ -1911,7 +1911,7 @@ mbus_send_switch_baudrate_frame(mbus_handle * handle, int address, long baudrate
 
     if (frame == NULL)
     {
-        MBUS_ERROR("%s: failed to allocate mbus frame.\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: failed to allocate mbus frame.\n", __func__);
         return -1;
     }
 
@@ -1922,7 +1922,7 @@ mbus_send_switch_baudrate_frame(mbus_handle * handle, int address, long baudrate
     if (mbus_send_frame(handle, frame) == -1)
     {
         mbus_frame_free(frame);
-        MBUS_ERROR("%s: failed to send mbus frame.\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: failed to send mbus frame.\n", __func__);
         retval = -1;
     }
 
@@ -1942,13 +1942,13 @@ mbus_send_application_reset_frame(mbus_handle * handle, int address, int subcode
 
     if (mbus_is_primary_address(address) == 0)
     {
-        MBUS_ERROR("%s: invalid address %d\n", __PRETTY_FUNCTION__, address);
+        MBUS_ERROR("%s: invalid address %d\n", __func__, address);
         return -1;
     }
 
     if (subcode > 0xFF)
     {
-        MBUS_ERROR("%s: invalid subcode %d\n", __PRETTY_FUNCTION__, subcode);
+        MBUS_ERROR("%s: invalid subcode %d\n", __func__, subcode);
         return -1;
     }
 
@@ -1956,7 +1956,7 @@ mbus_send_application_reset_frame(mbus_handle * handle, int address, int subcode
 
     if (frame == NULL)
     {
-        MBUS_ERROR("%s: failed to allocate mbus frame.\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: failed to allocate mbus frame.\n", __func__);
         return -1;
     }
 
@@ -1977,7 +1977,7 @@ mbus_send_application_reset_frame(mbus_handle * handle, int address, int subcode
     if (mbus_send_frame(handle, frame) == -1)
     {
         mbus_frame_free(frame);
-        MBUS_ERROR("%s: failed to send mbus frame.\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: failed to send mbus frame.\n", __func__);
         retval = -1;
     }
 
@@ -1997,7 +1997,7 @@ mbus_send_request_frame(mbus_handle * handle, int address)
 
     if (mbus_is_primary_address(address) == 0)
     {
-        MBUS_ERROR("%s: invalid address %d\n", __PRETTY_FUNCTION__, address);
+        MBUS_ERROR("%s: invalid address %d\n", __func__, address);
         return -1;
     }
 
@@ -2005,7 +2005,7 @@ mbus_send_request_frame(mbus_handle * handle, int address)
 
     if (frame == NULL)
     {
-        MBUS_ERROR("%s: failed to allocate mbus frame.\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: failed to allocate mbus frame.\n", __func__);
         return -1;
     }
 
@@ -2015,7 +2015,7 @@ mbus_send_request_frame(mbus_handle * handle, int address)
     if (mbus_send_frame(handle, frame) == -1)
     {
         mbus_frame_free(frame);
-        MBUS_ERROR("%s: failed to send mbus frame.\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: failed to send mbus frame.\n", __func__);
         retval = -1;
     }
 
@@ -2034,19 +2034,19 @@ mbus_send_user_data_frame(mbus_handle * handle, int address, const unsigned char
 
     if (mbus_is_primary_address(address) == 0)
     {
-        MBUS_ERROR("%s: invalid address %d\n", __PRETTY_FUNCTION__, address);
+        MBUS_ERROR("%s: invalid address %d\n", __func__, address);
         return -1;
     }
 
     if (data == NULL)
     {
-        MBUS_ERROR("%s: Invalid data\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: Invalid data\n", __func__);
         return -1;
     }
 
     if ((data_size > MBUS_FRAME_DATA_LENGTH) || (data_size == 0))
     {
-        MBUS_ERROR("%s: illegal data_size %zu\n", __PRETTY_FUNCTION__, data_size);
+        MBUS_ERROR("%s: illegal data_size %zu\n", __func__, data_size);
         return -1;
     }
 
@@ -2054,7 +2054,7 @@ mbus_send_user_data_frame(mbus_handle * handle, int address, const unsigned char
 
     if (frame == NULL)
     {
-        MBUS_ERROR("%s: failed to allocate mbus frame.\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: failed to allocate mbus frame.\n", __func__);
         return -1;
     }
 
@@ -2067,7 +2067,7 @@ mbus_send_user_data_frame(mbus_handle * handle, int address, const unsigned char
     if (mbus_send_frame(handle, frame) == -1)
     {
         mbus_frame_free(frame);
-        MBUS_ERROR("%s: failed to send mbus frame.\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: failed to send mbus frame.\n", __func__);
         retval = -1;
     }
 
@@ -2086,7 +2086,7 @@ mbus_set_primary_address(mbus_handle * handle, int old_address, int new_address)
 
     if (mbus_is_primary_address(new_address) == 0)
     {
-        MBUS_ERROR("%s: invalid address %d\n", __PRETTY_FUNCTION__, new_address);
+        MBUS_ERROR("%s: invalid address %d\n", __func__, new_address);
         return -1;
     }
 
@@ -2095,7 +2095,7 @@ mbus_set_primary_address(mbus_handle * handle, int old_address, int new_address)
         case MBUS_ADDRESS_NETWORK_LAYER:
         case MBUS_ADDRESS_BROADCAST_REPLY:
         case MBUS_ADDRESS_BROADCAST_NOREPLY:
-            MBUS_ERROR("%s: invalid address %d\n", __PRETTY_FUNCTION__, new_address);
+            MBUS_ERROR("%s: invalid address %d\n", __func__, new_address);
             return -1;
     }
 
@@ -2116,13 +2116,13 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
 
     if (handle == NULL)
     {
-        MBUS_ERROR("%s: Invalid M-Bus handle for request.\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: Invalid M-Bus handle for request.\n", __func__);
         return 1;
     }
 
     if (mbus_is_primary_address(address) == 0)
     {
-        MBUS_ERROR("%s: invalid address %d\n", __PRETTY_FUNCTION__, address);
+        MBUS_ERROR("%s: invalid address %d\n", __func__, address);
         return 1;
     }
 
@@ -2130,7 +2130,7 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
 
     if (frame == NULL)
     {
-        MBUS_ERROR("%s: failed to allocate mbus frame.\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: failed to allocate mbus frame.\n", __func__);
         return -1;
     }
 
@@ -2159,17 +2159,17 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
         }
 
         if (debug)
-            printf("%s: debug: sending request frame\n", __PRETTY_FUNCTION__);
+            printf("%s: debug: sending request frame\n", __func__);
 
         if (mbus_send_frame(handle, frame) == -1)
         {
-            MBUS_ERROR("%s: failed to send mbus frame.\n", __PRETTY_FUNCTION__);
+            MBUS_ERROR("%s: failed to send mbus frame.\n", __func__);
             retval = -1;
             break;
         }
 
         if (debug)
-            printf("%s: debug: receiving response frame #%d\n", __PRETTY_FUNCTION__, frame_count);
+            printf("%s: debug: receiving response frame #%d\n", __func__, frame_count);
 
         result = mbus_recv_frame(handle, next_frame);
 
@@ -2180,20 +2180,20 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
         }
         else if (result == MBUS_RECV_RESULT_TIMEOUT)
         {
-            MBUS_ERROR("%s: No M-Bus response frame received.\n", __PRETTY_FUNCTION__);
+            MBUS_ERROR("%s: No M-Bus response frame received.\n", __func__);
             retry++;
             continue;
         }
         else if (result == MBUS_RECV_RESULT_INVALID)
         {
-            MBUS_ERROR("%s: Received invalid M-Bus response frame.\n", __PRETTY_FUNCTION__);
+            MBUS_ERROR("%s: Received invalid M-Bus response frame.\n", __func__);
             retry++;
             mbus_purge_frames(handle);
             continue;
         }
         else
         {
-            MBUS_ERROR("%s: Failed to receive M-Bus response frame.\n", __PRETTY_FUNCTION__);
+            MBUS_ERROR("%s: Failed to receive M-Bus response frame.\n", __func__);
             retval = 1;
             break;
         }
@@ -2206,7 +2206,7 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
         //
         if (mbus_frame_data_parse(next_frame, &reply_data) == -1)
         {
-            MBUS_ERROR("%s: M-bus data parse error.\n", __PRETTY_FUNCTION__);
+            MBUS_ERROR("%s: M-bus data parse error.\n", __func__);
             retval = 1;
             break;
         }
@@ -2230,7 +2230,7 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
                 ((max_frames > 0) && (frame_count < max_frames))) // only readout max_frames
             {
                 if (debug)
-                    printf("%s: debug: expecting more frames\n", __PRETTY_FUNCTION__);
+                    printf("%s: debug: expecting more frames\n", __func__);
 
                 more_frames = 1;
 
@@ -2239,7 +2239,7 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
 
                 if (next_frame->next == NULL)
                 {
-                    MBUS_ERROR("%s: failed to allocate mbus frame.\n", __PRETTY_FUNCTION__);
+                    MBUS_ERROR("%s: failed to allocate mbus frame.\n", __func__);
                     retval = -1;
                     more_frames = 0;
                 }
@@ -2252,7 +2252,7 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
             else
             {
                 if (debug)
-                    printf("%s: debug: no more frames\n", __PRETTY_FUNCTION__);
+                    printf("%s: debug: no more frames\n", __func__);
             }
         }
 
@@ -2279,7 +2279,7 @@ mbus_send_ping_frame(mbus_handle *handle, int address, char purge_response)
 
     if (mbus_is_primary_address(address) == 0)
     {
-        MBUS_ERROR("%s: invalid address %d\n", __PRETTY_FUNCTION__, address);
+        MBUS_ERROR("%s: invalid address %d\n", __func__, address);
         return 1;
     }
 
@@ -2287,7 +2287,7 @@ mbus_send_ping_frame(mbus_handle *handle, int address, char purge_response)
 
     if (frame == NULL)
     {
-        MBUS_ERROR("%s: failed to allocate mbus frame.\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: failed to allocate mbus frame.\n", __func__);
         return -1;
     }
 
@@ -2296,7 +2296,7 @@ mbus_send_ping_frame(mbus_handle *handle, int address, char purge_response)
 
     if (mbus_send_frame(handle, frame) == -1)
     {
-        MBUS_ERROR("%s: failed to send mbus frame.\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: failed to send mbus frame.\n", __func__);
         mbus_frame_free(frame);
         return -1;
     }
@@ -2321,7 +2321,7 @@ mbus_select_secondary_address(mbus_handle * handle, const char *mask)
 
     if (mask == NULL || strlen(mask) != 16)
     {
-        MBUS_ERROR("%s: Invalid address masks.\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: Invalid address masks.\n", __func__);
         return MBUS_PROBE_ERROR;
     }
 
@@ -2329,7 +2329,7 @@ mbus_select_secondary_address(mbus_handle * handle, const char *mask)
     if (mbus_send_select_frame(handle, mask) == -1)
     {
         MBUS_ERROR("%s: Failed to send selection frame: %s.\n",
-                   __PRETTY_FUNCTION__,
+                   __func__,
                    mbus_error_str());
         return MBUS_PROBE_ERROR;
     }
@@ -2360,7 +2360,7 @@ mbus_select_secondary_address(mbus_handle * handle, const char *mask)
         return MBUS_PROBE_SINGLE;
     }
 
-    MBUS_ERROR("%s: Unexpected reply for address [%s].\n", __PRETTY_FUNCTION__, mask);
+    MBUS_ERROR("%s: Unexpected reply for address [%s].\n", __func__, mask);
 
     return MBUS_PROBE_NOTHING;
 }
@@ -2377,7 +2377,7 @@ mbus_probe_secondary_address(mbus_handle *handle, const char *mask, char *matchi
 
     if (mask == NULL || matching_addr == NULL || strlen(mask) != 16)
     {
-        MBUS_ERROR("%s: Invalid address masks.\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: Invalid address masks.\n", __func__);
         return MBUS_PROBE_ERROR;
     }
 
@@ -2391,7 +2391,7 @@ mbus_probe_secondary_address(mbus_handle *handle, const char *mask, char *matchi
             if (mbus_send_request_frame(handle, MBUS_ADDRESS_NETWORK_LAYER) == -1)
             {
                 MBUS_ERROR("%s: Failed to send request to selected secondary device [mask %s]: %s.\n",
-                           __PRETTY_FUNCTION__,
+                           __func__,
                            mask,
                            mbus_error_str());
                 return MBUS_PROBE_ERROR;
@@ -2442,7 +2442,7 @@ mbus_probe_secondary_address(mbus_handle *handle, const char *mask, char *matchi
             else
             {
                 MBUS_ERROR("%s: Unexpected reply for address [mask %s]. Expected long frame.\n",
-                           __PRETTY_FUNCTION__, mask);
+                           __func__, mask);
                 return MBUS_PROBE_NOTHING;
             }
         }
@@ -2461,7 +2461,7 @@ int mbus_read_slave(mbus_handle * handle, mbus_address *address, mbus_frame * re
 {
     if (handle == NULL || address == NULL)
     {
-        MBUS_ERROR("%s: Invalid handle or address.\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: Invalid handle or address.\n", __func__);
         return -1;
     }
 
@@ -2470,7 +2470,7 @@ int mbus_read_slave(mbus_handle * handle, mbus_address *address, mbus_frame * re
         if (mbus_send_request_frame(handle, address->primary) == -1)
         {
             MBUS_ERROR("%s: Failed to send M-Bus request frame.\n",
-                       __PRETTY_FUNCTION__);
+                       __func__);
             return -1;
         }
     }
@@ -2482,7 +2482,7 @@ int mbus_read_slave(mbus_handle * handle, mbus_address *address, mbus_frame * re
         if (address->secondary == NULL)
         {
             MBUS_ERROR("%s: Secondary address not set.\n",
-                       __PRETTY_FUNCTION__);
+                       __func__);
             return -1;
         }
 
@@ -2491,21 +2491,21 @@ int mbus_read_slave(mbus_handle * handle, mbus_address *address, mbus_frame * re
         if (probe_ret == MBUS_PROBE_COLLISION)
         {
             MBUS_ERROR("%s: The address mask [%s] matches more than one device.\n",
-                       __PRETTY_FUNCTION__,
+                       __func__,
                        address->secondary);
             return -1;
         }
         else if (probe_ret == MBUS_PROBE_NOTHING)
         {
             MBUS_ERROR("%s: The selected secondary address [%s] does not match any device.\n",
-                       __PRETTY_FUNCTION__,
+                       __func__,
                        address->secondary);
             return -1;
         }
         else if (probe_ret == MBUS_PROBE_ERROR)
         {
             MBUS_ERROR("%s: Failed to probe secondary address [%s].\n",
-                       __PRETTY_FUNCTION__,
+                       __func__,
                        address->secondary);
             return -1;
         }
@@ -2514,7 +2514,7 @@ int mbus_read_slave(mbus_handle * handle, mbus_address *address, mbus_frame * re
         if (mbus_send_request_frame(handle, MBUS_ADDRESS_NETWORK_LAYER) == -1)
         {
             MBUS_ERROR("%s: Failed to send M-Bus request frame.\n",
-                       __PRETTY_FUNCTION__);
+                       __func__);
             return -1;
         }
     }
@@ -2522,7 +2522,7 @@ int mbus_read_slave(mbus_handle * handle, mbus_address *address, mbus_frame * re
     if (mbus_recv_frame(handle, reply) != 0)
     {
         MBUS_ERROR("%s: Failed to receive M-Bus response frame.\n",
-                   __PRETTY_FUNCTION__);
+                   __func__);
         return -1;
     }
 
@@ -2540,13 +2540,13 @@ mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask)
 
     if (handle == NULL || addr_mask == NULL)
     {
-        MBUS_ERROR("%s: Invalid handle or address mask.\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: Invalid handle or address mask.\n", __func__);
         return -1;
     }
 
     if (strlen(addr_mask) != 16)
     {
-        MBUS_ERROR("%s: Illegal address mask [%s]. Not 16 characters long.\n", __PRETTY_FUNCTION__, addr_mask);
+        MBUS_ERROR("%s: Illegal address mask [%s]. Not 16 characters long.\n", __func__, addr_mask);
         return -1;
     }
 
@@ -2557,7 +2557,7 @@ mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask)
 
     if ((mask = strdup(addr_mask)) == NULL)
     {
-        MBUS_ERROR("%s: Failed to allocate local copy of the address mask.\n", __PRETTY_FUNCTION__);
+        MBUS_ERROR("%s: Failed to allocate local copy of the address mask.\n", __func__);
         return -1;
     }
 
@@ -2612,7 +2612,7 @@ mbus_scan_2nd_address_range(mbus_handle * handle, int pos, char *addr_mask)
             }
             else // MBUS_PROBE_ERROR
             {
-                MBUS_ERROR("%s: Failed to probe secondary address [%s].\n", __PRETTY_FUNCTION__, mask);
+                MBUS_ERROR("%s: Failed to probe secondary address [%s].\n", __func__, mask);
 		free(mask);
                 return -1;
             }

@@ -59,7 +59,7 @@ mbus_tcp_connect(mbus_handle *handle)
     //
     if ((handle->fd = socket(AF_INET,SOCK_STREAM, 0)) < 0)
     {
-        snprintf(error_str, sizeof(error_str), "%s: failed to setup a socket.", __PRETTY_FUNCTION__);
+        snprintf(error_str, sizeof(error_str), "%s: failed to setup a socket.", __func__);
         mbus_error_str_set(error_str);
         return -1;
     }
@@ -70,7 +70,7 @@ mbus_tcp_connect(mbus_handle *handle)
     /* resolve hostname */
     if ((host_addr = gethostbyname(host)) == NULL)
     {
-        snprintf(error_str, sizeof(error_str), "%s: unknown host: %s", __PRETTY_FUNCTION__, host);
+        snprintf(error_str, sizeof(error_str), "%s: unknown host: %s", __func__, host);
         mbus_error_str_set(error_str);
         return -1;
     }
@@ -79,7 +79,7 @@ mbus_tcp_connect(mbus_handle *handle)
 
     if (connect(handle->fd, (struct sockaddr *)&s, sizeof(s)) < 0)
     {
-        snprintf(error_str, sizeof(error_str), "%s: Failed to establish connection to %s:%d", __PRETTY_FUNCTION__, host, port);
+        snprintf(error_str, sizeof(error_str), "%s: Failed to establish connection to %s:%d", __func__, host, port);
         mbus_error_str_set(error_str);
         return -1;
     }
@@ -155,7 +155,7 @@ mbus_tcp_send_frame(mbus_handle *handle, mbus_frame *frame)
 
     if ((len = mbus_frame_pack(frame, buff, sizeof(buff))) == -1)
     {
-        snprintf(error_str, sizeof(error_str), "%s: mbus_frame_pack failed\n", __PRETTY_FUNCTION__);
+        snprintf(error_str, sizeof(error_str), "%s: mbus_frame_pack failed\n", __func__);
         mbus_error_str_set(error_str);
         return -1;
     }
@@ -170,7 +170,7 @@ mbus_tcp_send_frame(mbus_handle *handle, mbus_frame *frame)
     }
     else
     {
-        snprintf(error_str, sizeof(error_str), "%s: Failed to write frame to socket (ret = %d)\n", __PRETTY_FUNCTION__, ret);
+        snprintf(error_str, sizeof(error_str), "%s: Failed to write frame to socket (ret = %d)\n", __func__, ret);
         mbus_error_str_set(error_str);
         return -1;
     }
@@ -188,7 +188,7 @@ int mbus_tcp_recv_frame(mbus_handle *handle, mbus_frame *frame)
     ssize_t len, nread;
 
     if (handle == NULL || frame == NULL) {
-        fprintf(stderr, "%s: Invalid parameter.\n", __PRETTY_FUNCTION__);
+        fprintf(stderr, "%s: Invalid parameter.\n", __func__);
         return MBUS_RECV_RESULT_ERROR;
     }
 

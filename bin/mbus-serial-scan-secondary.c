@@ -22,7 +22,7 @@ int
 init_slaves(mbus_handle *handle)
 {
     if (debug)
-        printf("%s: debug: sending init frame #1\n", __PRETTY_FUNCTION__);
+        printf("%s: debug: sending init frame #1\n", __func__);
 
     if (mbus_send_ping_frame(handle, MBUS_ADDRESS_NETWORK_LAYER, 1) == -1)
     {
@@ -34,7 +34,7 @@ init_slaves(mbus_handle *handle)
     //
 
     if (debug)
-        printf("%s: debug: sending init frame #2\n", __PRETTY_FUNCTION__);
+        printf("%s: debug: sending init frame #2\n", __func__);
 
     if (mbus_send_ping_frame(handle, MBUS_ADDRESS_BROADCAST_NOREPLY, 1) == -1)
     {
