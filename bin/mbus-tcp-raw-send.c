@@ -170,6 +170,16 @@ main(int argc, char **argv)
     }
 
     //
+    // set destination M-Bus address and update fcs
+    //
+    request.address = address;
+    if (mbus_frame_calc_checksum(&request) == -1)
+    {
+        fprintf(stderr, "Failed updating frame checksum.\n");
+        return 1;
+    }
+
+    //
     // send the request
     //
     if (mbus_send_frame(handle, &request) == -1)
