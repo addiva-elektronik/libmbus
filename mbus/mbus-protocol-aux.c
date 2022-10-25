@@ -826,9 +826,9 @@ int mbus_fixed_normalize(int medium_unit, long medium_value, char **unit_out, do
             break;
 
     default:
-        for(int i=0; fixed_table[i].vif < 0xfff; ++i)
+        for (size_t i = 0; fixed_table[i].vif < 0xfff; ++i)
         {
-            if (fixed_table[i].vif == medium_unit)
+	    if (fixed_table[i].vif == (unsigned)medium_unit)
             {
                 *unit_out = strdup(fixed_table[i].unit);
                 *value_out = ((double) (medium_value)) * fixed_table[i].exponent;

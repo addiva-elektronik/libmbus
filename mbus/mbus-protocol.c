@@ -666,7 +666,7 @@ mbus_data_long_long_decode(unsigned char *int_data, size_t int_data_size, long l
 int
 mbus_data_int_encode(unsigned char *int_data, size_t int_data_size, int value)
 {
-    int i;
+    size_t i;
 
     if (int_data)
     {
@@ -3406,14 +3406,14 @@ long mbus_data_record_storage_number(mbus_data_record *record)
 {
     int bit_index = 0;
     long result = 0;
-    int i;
+    size_t i;
 
     if (record)
     {
         result |= (record->drh.dib.dif & MBUS_DATA_RECORD_DIF_MASK_STORAGE_NO) >> 6;
         bit_index++;
 
-        for (i=0; i<record->drh.dib.ndife; i++)
+        for (i = 0; i < record->drh.dib.ndife; i++)
         {
             result |= (record->drh.dib.dife[i] & MBUS_DATA_RECORD_DIFE_MASK_STORAGE_NO) << bit_index;
             bit_index += 4;
@@ -3432,11 +3432,11 @@ long mbus_data_record_tariff(mbus_data_record *record)
 {
     int bit_index = 0;
     long result = 0;
-    int i;
+    size_t i;
 
     if (record && (record->drh.dib.ndife > 0))
     {
-        for (i=0; i<record->drh.dib.ndife; i++)
+        for (i =0; i < record->drh.dib.ndife; i++)
         {
             result |= ((record->drh.dib.dife[i] & MBUS_DATA_RECORD_DIFE_MASK_TARIFF) >> 4) << bit_index;
             bit_index += 2;
@@ -3455,11 +3455,11 @@ int mbus_data_record_device(mbus_data_record *record)
 {
     int bit_index = 0;
     int result = 0;
-    int i;
+    size_t i;
 
     if (record && (record->drh.dib.ndife > 0))
     {
-        for (i=0; i<record->drh.dib.ndife; i++)
+        for (i = 0; i < record->drh.dib.ndife; i++)
         {
             result |= ((record->drh.dib.dife[i] & MBUS_DATA_RECORD_DIFE_MASK_DEVICE) >> 6) << bit_index;
             bit_index++;
@@ -4141,7 +4141,7 @@ int
 mbus_frame_internal_pack(mbus_frame *frame, mbus_frame_data *frame_data)
 {
     mbus_data_record *record;
-    int j;
+    size_t j;
 
     if (frame == NULL || frame_data == NULL)
         return -1;
