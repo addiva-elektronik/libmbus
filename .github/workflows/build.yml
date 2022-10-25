@@ -1,4 +1,4 @@
-name: Test
+name: Bob the Builder
 
 # Run this job on all pushes and pull requests
 # as well as tags with a semantic version
@@ -20,7 +20,7 @@ jobs:
         os: [ubuntu-latest, macos-latest]
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
 
       - name: Install automake (macos)
         if: startsWith(runner.OS, 'macOS')
