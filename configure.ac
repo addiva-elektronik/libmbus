@@ -14,14 +14,18 @@ LT_CONFIG_LTDL_DIR([libltdl])
 # https://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html
 AC_INIT([libmbus], [0.9.0], [info@rscada.se], [libmbus], [http://www.rscada.se/libmbus/])
 AC_CONFIG_AUX_DIR([libltdl/config])
-AM_INIT_AUTOMAKE([-Wall -Werror foreign])
-
-AM_PROG_LIBTOOL
-AM_PROG_AR
-AC_PROG_CC
+AM_INIT_AUTOMAKE([-W -Wall foreign])
 
 AC_CONFIG_HEADERS([config.h])
-AC_CONFIG_FILES([Makefile mbus/Makefile test/Makefile bin/Makefile libmbus.pc])
+AC_CONFIG_FILES([Makefile
+	mbus/Makefile
+	test/Makefile
+	bin/Makefile
+	libmbus.pc])
+
+AM_PROG_AR
+AC_PROG_CC
+LT_INIT
 
 AC_CHECK_HEADERS([termios.h])
 
