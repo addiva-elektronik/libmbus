@@ -29,6 +29,7 @@ LT_INIT
 LT_CONFIG_LTDL_DIR([libltdl])
 
 AC_CHECK_HEADERS([termios.h])
+AC_CHECK_FUNCS([strdup malloc])
 
 AC_OUTPUT
 

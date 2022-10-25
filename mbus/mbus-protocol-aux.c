@@ -11,6 +11,9 @@
 //
 //------------------------------------------------------------------------------
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include "mbus-protocol-aux.h"
 #include "mbus-serial.h"
 #include "mbus-tcp.h"
@@ -29,6 +32,24 @@
 #define MBUS_DEBUG(...)
 #endif
 /*@end@*/
+
+#ifndef HAVE_STRDUP
+char *strdup(const char *str)
+{
+    size_t len;
+    char *ptr;
+
+    if ((char *)str == NULL)
+	    return NULL;
+
+    len = strlen(str) + 1;
+    ptr = malloc(len);
+    if (!ptr)
+	return NULL;
+
+    return memcpy(ptr, str, len);
+}
+#endif
 
 static int debug = 0;
 
