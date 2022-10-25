@@ -24,6 +24,7 @@ main(int argc, char **argv)
     char *host, *addr_mask = NULL;
     mbus_handle *handle = NULL;
     mbus_frame reply;
+    int rc = 1;
     long port;
 
     memset((void *)&reply, 0, sizeof(mbus_frame));
@@ -40,17 +41,11 @@ main(int argc, char **argv)
     port = atol(argv[2]);
     if (argc == 4)
     {
-        addr_mask = strdup(argv[3]);
+        addr_mask = argv[3];
     }
     else
     {
-        addr_mask = strdup("FFFFFFFFFFFFFFFF");
-    }
-
-    if (addr_mask == NULL)
-    {
-        fprintf(stderr, "Failed to allocate address mask.\n");
-        return 1;
+        addr_mask = "FFFFFFFFFFFFFFFF";
     }
 
     if ((port < 0) || (port > 0xFFFF))
@@ -67,14 +62,14 @@ main(int argc, char **argv)
 
     if ((handle = mbus_context_tcp(host, port)) == NULL)
     {
-        fprintf(stderr, "Could not initialize M-Bus context: %s\n",  mbus_error_str());
+        fprintf(stderr, "Could not initialize M-Bus context: %s\n", mbus_error_str());
         return 1;
     }
 
     if (mbus_connect(handle) == -1)
     {
         fprintf(stderr, "Failed to setup connection to M-bus gateway\n");
-        return 1;
+        goto err_connect;
     }
 
     //
@@ -85,8 +80,8 @@ main(int argc, char **argv)
 
     if (mbus_send_ping_frame(handle, MBUS_ADDRESS_NETWORK_LAYER, 1) == -1)
     {
-        free(addr_mask);
-        return 1;
+	fprintf(stderr, "Failed sending ping to network layer address: %s\n", mbus_error_str());
+        goto err;
     }
 
     //
@@ -97,19 +92,24 @@ main(int argc, char **argv)
 
     if (mbus_send_ping_frame(handle, MBUS_ADDRESS_BROADCAST_NOREPLY, 1) == -1)
     {
-        free(addr_mask);
-        return 1;
+	fprintf(stderr, "Failed sending ping to broadcast (no-reply) address: %s\n", mbus_error_str());
+        goto err;
     }
 
-    mbus_scan_2nd_address_range(handle, 0, addr_mask);
+    if (mbus_scan_2nd_address_range(handle, 0, addr_mask) == -1)
+    {
+	fprintf(stderr, "Failed secondary address scan: %s\n", mbus_error_str());
+    }
+    else
+    {
+	rc = 0;
+    }
 
+err:
     mbus_disconnect(handle);
+err_connect:
     mbus_context_free(handle);
 
-    //printf("Summary: Tried %ld address masks and found %d devices.\n", probe_count, match_count);
-
-    free(addr_mask);
-
-    return 0;
+    return rc;
 }
 
