@@ -7,6 +7,7 @@ test/Makefile.in
 /INSTALL
 /aclocal.m4
 /autom4te.cache
+/build-aux
 /compile
 config.guess
 config.sub
@@ -16,7 +17,6 @@ configure
 /libltdl/
 /ltmain.sh
 /missing
-src/config.h.in
 /m4
 
 # configure stuff:
@@ -29,6 +29,7 @@ config.status
 libtool
 stamp-h1
 libmbus.pc
+config.h.in
 config.h
 
 # make:
@@ -75,6 +76,10 @@ test/unsupported-frames/*.xml.new
 /build/
 _build/
 
-# IDE
+# IDE and helper files
 /.vscode/
 CMakeLists.txt.user
+GPATH
+GRTAGS
+GTAGS
+TAGS
