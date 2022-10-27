@@ -10,6 +10,7 @@
 
 #include <assert.h>
 #include <ctype.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -81,22 +82,26 @@ mbus_dump_send_event(unsigned char src_type, const char *buff, size_t len)
 /// Return a string that contains an the latest error message.
 //------------------------------------------------------------------------------
 char *
-mbus_error_str()
+mbus_error_str(void)
 {
     return error_str;
 }
 
 void
-mbus_error_str_set(char *message)
+mbus_error_str_set(char *fmt, ...)
 {
-    if (message)
+    va_list ap;
+
+    va_start(ap, fmt);
+    if (fmt)
     {
-        snprintf(error_str, sizeof(error_str), "%s", message);
+        vsnprintf(error_str, sizeof(error_str), fmt, ap);
     }
+    va_end(ap);
 }
 
 void
-mbus_error_reset()
+mbus_error_reset(void)
 {
     snprintf(error_str, sizeof(error_str), "no errors");
 }

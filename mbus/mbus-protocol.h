@@ -632,9 +632,9 @@ int mbus_data_error_print(int error);
 int mbus_data_variable_header_print(mbus_data_variable_header *header);
 int mbus_data_variable_print(mbus_data_variable *data);
 
-char *mbus_error_str();
-void  mbus_error_str_set(char *message);
-void  mbus_error_reset();
+char *mbus_error_str     (void);
+void  mbus_error_str_set (char *fmt, ...);
+void  mbus_error_reset   (void);
 
 void  mbus_parse_set_debug(int debug);
 void  mbus_hex_dump(const char *label, const char *buff, size_t len);
