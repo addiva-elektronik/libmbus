@@ -26,6 +26,12 @@
 #else
 #error "No 'struct termios' on platform, you need to supply your own mbus-serial.c"
 #endif
+
+#ifdef __linux__
+#include <linux/serial.h>
+#include <sys/ioctl.h>
+#endif
+
 #include <errno.h>
 #include <string.h>
 
@@ -43,8 +49,11 @@ int
 mbus_serial_connect(mbus_handle *handle)
 {
     mbus_serial_data *serial_data;
-    const char *device;
+#ifdef __linux__
+    struct serial_struct serinfo;
+#endif
     struct termios *term;
+    const char *device;
 
     if (handle == NULL)
         return -1;
@@ -72,7 +81,17 @@ mbus_serial_connect(mbus_handle *handle)
 
     memset(term, 0, sizeof(*term));
     term->c_cflag |= (CS8|CREAD|CLOCAL);
-    term->c_cflag |= PARENB;
+#ifdef __linux__
+    serinfo.reserved_char[0] = 0;
+    if (ioctl(handle->fd, TIOCGSERIAL, &serinfo) == -1 && errno == ENOTTY)
+    {
+        mbus_error_str_set("not a serial port, disabling parity, reverting to 8N1.", device);
+    }
+    else
+#endif
+    {
+	term->c_cflag |= PARENB;
+    }
 
     // No received data still OK
     term->c_cc[VMIN] = (cc_t) 0;
