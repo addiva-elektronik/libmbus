@@ -1165,7 +1165,6 @@ mbus_vib_unit_normalize(mbus_value_information_block *vib, double value, char **
         code = ((vib->vife[0]) & MBUS_DIB_VIF_WITHOUT_EXTENSION) | 0x100;
         if (mbus_vif_unit_normalize(code, value, unit_out, value_out, quantity_out) != 0)
         {
-            MBUS_ERROR("%s: Error mbus_vif_unit_normalize\n", __func__);
             return -1;
         }
     } else {
@@ -1180,7 +1179,6 @@ mbus_vib_unit_normalize(mbus_value_information_block *vib, double value, char **
             code = ((vib->vife[0]) & MBUS_DIB_VIF_WITHOUT_EXTENSION) | 0x200;
             if (0 != mbus_vif_unit_normalize(code, value, unit_out, value_out, quantity_out))
             {
-                MBUS_ERROR("%s: Error mbus_vif_unit_normalize\n", __func__);
                 return -1;
             }
         }
@@ -1197,7 +1195,6 @@ mbus_vib_unit_normalize(mbus_value_information_block *vib, double value, char **
             code = (vib->vif) & MBUS_DIB_VIF_WITHOUT_EXTENSION;
             if (0 != mbus_vif_unit_normalize(code, value, unit_out, value_out, quantity_out))
             {
-                MBUS_ERROR("%s: Error mbus_vif_unit_normalize\n", __func__);
                 return -1;
             }
         }
@@ -1302,7 +1299,6 @@ mbus_parse_fixed_record(char status_byte, char medium_unit, unsigned char *data)
 
     if (!(record = mbus_record_new()))
     {
-        MBUS_ERROR("%s: memory allocation error\n", __func__);
         return NULL;
     }
 
@@ -1329,7 +1325,6 @@ mbus_parse_fixed_record(char status_byte, char medium_unit, unsigned char *data)
     record->is_numeric = 1;
     if (0 != mbus_fixed_normalize(medium_unit, value, &(record->unit), &(record->value.real_val), &(record->quantity)))
     {
-        MBUS_ERROR("Problem with mbus_fixed_normalize.\n");
         mbus_record_free(record);
         return NULL;
     }
@@ -1355,7 +1350,6 @@ mbus_parse_variable_record(mbus_data_record *data)
 
     if (!(record = mbus_record_new()))
     {
-        MBUS_ERROR("%s: memory allocation error\n", __func__);
         return NULL;
     }
 
@@ -1387,7 +1381,6 @@ mbus_parse_variable_record(mbus_data_record *data)
 
         if (mbus_variable_value_decode(data, &value_out_real, &value_out_str, &value_out_str_size) != 0)
         {
-            MBUS_ERROR("%s: problem with mbus_variable_value_decode\n", __func__);
             mbus_record_free(record);
             return NULL;
         }
@@ -1419,7 +1412,6 @@ mbus_parse_variable_record(mbus_data_record *data)
 
         if (mbus_variable_value_decode(data, &value_out_real, &value_out_str, &value_out_str_size) != 0)
         {
-            MBUS_ERROR("%s: problem with mbus_variable_value_decode\n", __func__);
             mbus_record_free(record);
             return NULL;
         }
@@ -1427,7 +1419,6 @@ mbus_parse_variable_record(mbus_data_record *data)
 
         if (mbus_vib_unit_normalize(&(data->drh.vib), value_out_real, &(record->unit), &real_val, &(record->quantity)) != 0)
         {
-            MBUS_ERROR("%s: problem with mbus_vib_unit_normalize\n", __func__);
 	    if (value_out_str)
 		    free(value_out_str);
             mbus_record_free(record);
@@ -2166,14 +2157,12 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
         }
         else if (result == MBUS_RECV_RESULT_INVALID)
         {
-            MBUS_ERROR("%s: Received invalid M-Bus response frame.\n", __func__);
-            retry++;
             mbus_purge_frames(handle);
+            retry++;
             continue;
         }
         else
         {
-            MBUS_ERROR("%s: Failed to receive M-Bus response frame.\n", __func__);
             retval = 1;
             break;
         }
@@ -2501,8 +2490,6 @@ int mbus_read_slave(mbus_handle * handle, mbus_address *address, mbus_frame * re
 
     if (mbus_recv_frame(handle, reply) != 0)
     {
-        MBUS_ERROR("%s: Failed to receive M-Bus response frame.\n",
-                   __func__);
         return -1;
     }
 

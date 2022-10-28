@@ -35,7 +35,6 @@
 
 #define PACKET_BUFF_SIZE 2048
 
-/* XXX: Call mbus_error_str_set() in below error cases --Jocke */
 //------------------------------------------------------------------------------
 /// Set up a serial connection handle.
 //------------------------------------------------------------------------------
@@ -393,7 +392,6 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
             if (timeouts >= 3)
             {
                 // abort to avoid endless loop
-                fprintf(stderr, "%s: Timeout\n", __func__);
                 break;
             }
         }

@@ -187,8 +187,8 @@ int mbus_tcp_recv_frame(mbus_handle *handle, mbus_frame *frame)
     int remaining;
     ssize_t len, nread;
 
-    if (handle == NULL || frame == NULL) {
-        fprintf(stderr, "%s: Invalid parameter.\n", __func__);
+    if (handle == NULL || frame == NULL)
+    {
         return MBUS_RECV_RESULT_ERROR;
     }
 
