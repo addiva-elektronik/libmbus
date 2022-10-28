@@ -86,8 +86,9 @@ mbus_serial_connect(mbus_handle *handle)
 int
 mbus_serial_set_baudrate(mbus_handle *handle, long baudrate)
 {
-    speed_t speed;
     mbus_serial_data *serial_data;
+    struct termios *term;
+    speed_t speed;
 
     if (handle == NULL)
     {
@@ -101,6 +102,7 @@ mbus_serial_set_baudrate(mbus_handle *handle, long baudrate)
         mbus_error_str_set("M-Bus serial handle missing tty data ptr.");
         return -1;
     }
+    term = &(serial_data->t);
 
     // Wait at most 0.2 sec.Note that it starts after first received byte!!
     // I.e. if CMIN>0 and there are no data we would still wait forever...
@@ -119,63 +121,53 @@ mbus_serial_set_baudrate(mbus_handle *handle, long baudrate)
     {
         case 300:
             speed = B300;
-            serial_data->t.c_cc[VTIME] = (cc_t) 13; // Timeout in 1/10 sec
+            term->c_cc[VTIME] = (cc_t) 13; // Timeout in 1/10 sec
             break;
 
         case 600:
             speed = B600;
-            serial_data->t.c_cc[VTIME] = (cc_t) 8;  // Timeout in 1/10 sec
+            term->c_cc[VTIME] = (cc_t) 8;  // Timeout in 1/10 sec
             break;
 
         case 1200:
             speed = B1200;
-            serial_data->t.c_cc[VTIME] = (cc_t) 5;  // Timeout in 1/10 sec
+            term->c_cc[VTIME] = (cc_t) 5;  // Timeout in 1/10 sec
             break;
 
         case 2400:
             speed = B2400;
-            serial_data->t.c_cc[VTIME] = (cc_t) 3;  // Timeout in 1/10 sec
+            term->c_cc[VTIME] = (cc_t) 3;  // Timeout in 1/10 sec
             break;
 
         case 4800:
             speed = B4800;
-            serial_data->t.c_cc[VTIME] = (cc_t) 3;  // Timeout in 1/10 sec
+            term->c_cc[VTIME] = (cc_t) 3;  // Timeout in 1/10 sec
             break;
 
         case 9600:
             speed = B9600;
-            serial_data->t.c_cc[VTIME] = (cc_t) 2;  // Timeout in 1/10 sec
+            term->c_cc[VTIME] = (cc_t) 2;  // Timeout in 1/10 sec
             break;
 
         case 19200:
             speed = B19200;
-            serial_data->t.c_cc[VTIME] = (cc_t) 2;  // Timeout in 1/10 sec
+            term->c_cc[VTIME] = (cc_t) 2;  // Timeout in 1/10 sec
             break;
 
         case 38400:
             speed = B38400;
-            serial_data->t.c_cc[VTIME] = (cc_t) 2;  // Timeout in 1/10 sec
+            term->c_cc[VTIME] = (cc_t) 2;  // Timeout in 1/10 sec
             break;
 
-       default:
-            return -1; // unsupported baudrate
+        default:
+	    mbus_error_str_set("unsupported baudrate %d.");
+            return -1;
     }
 
-    // Set input baud rate
-    if (cfsetispeed(&(serial_data->t), speed) == -1)
-    {
-        mbus_error_str_set("M-Bus serial failed setting input baudrate %d, error %d.",
-			   speed, errno);
-        return -1;
-    }
-
-    // Set output baud rate
-    if (cfsetospeed(&(serial_data->t), speed) == -1)
-    {
-        mbus_error_str_set("M-Bus serial failed setting output baudrate %d, error %d.",
-			   speed, errno);
-        return -1;
-    }
+    // Set input & output baud rate
+    if (cfsetispeed(term, speed) == -1 ||
+	cfsetospeed(term, speed) == -1)
+	goto error;
 
 #ifdef MBUS_SERIAL_DEBUG
     printf("%s: t.c_cflag = %x\n", __func__, term->c_cflag);
@@ -185,9 +177,10 @@ mbus_serial_set_baudrate(mbus_handle *handle, long baudrate)
 #endif
 
     // Change baud rate immediately
-    if (tcsetattr(handle->fd, TCSANOW, &(serial_data->t)) == -1)
+    if (tcsetattr(handle->fd, TCSANOW, term) == -1)
     {
-        mbus_error_str_set("M-Bus serial failed tcsetattr(), error %d.", errno);
+    error:
+        mbus_error_str_set("failed setting baudrate %d, error %d.", baudrate, errno);
         return -1;
     }
 
