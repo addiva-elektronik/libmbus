@@ -76,35 +76,7 @@ mbus_serial_connect(mbus_handle *handle)
     // No received data still OK
     term->c_cc[VMIN] = (cc_t) 0;
 
-    // Wait at most 0.2 sec.Note that it starts after first received byte!!
-    // I.e. if CMIN>0 and there are no data we would still wait forever...
-    //
-    // The specification mentions link layer response timeout this way:
-    // The time structure of various link layer communication types is described in EN60870-5-1. The answer time
-    // between the end of a master send telegram and the beginning of the response telegram of the slave shall be
-    // between 11 bit times and (330 bit times + 50ms).
-    //
-    // Nowadays the usage of USB to serial adapter is very common, which could
-    // result in additional delay of 100 ms in worst case.
-    //
-    // For 2400Bd this means (330 + 11) / 2400 + 0.15 = 292 ms (added 11 bit periods to receive first byte).
-    // I.e. timeout of 0.3s seems appropriate for 2400Bd.
-
-    term->c_cc[VTIME] = (cc_t) 3; // Timeout in 1/10 sec
-
-    cfsetispeed(term, B2400);
-    cfsetospeed(term, B2400);
-
-#ifdef MBUS_SERIAL_DEBUG
-    printf("%s: t.c_cflag = %x\n", __func__, term->c_cflag);
-    printf("%s: t.c_oflag = %x\n", __func__, term->c_oflag);
-    printf("%s: t.c_iflag = %x\n", __func__, term->c_iflag);
-    printf("%s: t.c_lflag = %x\n", __func__, term->c_lflag);
-#endif
-
-    tcsetattr(handle->fd, TCSANOW, term);
-
-    return 0;
+    return mbus_serial_set_baudrate(handle, 2400);
 }
 
 //------------------------------------------------------------------------------
@@ -129,6 +101,19 @@ mbus_serial_set_baudrate(mbus_handle *handle, long baudrate)
         return -1;
     }
 
+    // Wait at most 0.2 sec.Note that it starts after first received byte!!
+    // I.e. if CMIN>0 and there are no data we would still wait forever...
+    //
+    // The specification mentions link layer response timeout this way:
+    // The time structure of various link layer communication types is described in EN60870-5-1. The answer time
+    // between the end of a master send telegram and the beginning of the response telegram of the slave shall be
+    // between 11 bit times and (330 bit times + 50ms).
+    //
+    // Nowadays the usage of USB to serial adapter is very common, which could
+    // result in additional delay of 100 ms in worst case.
+    //
+    // For 2400Bd this means (330 + 11) / 2400 + 0.15 = 292 ms (added 11 bit periods to receive first byte).
+    // I.e. timeout of 0.3s seems appropriate for 2400Bd.
     switch (baudrate)
     {
         case 300:
@@ -190,6 +175,13 @@ mbus_serial_set_baudrate(mbus_handle *handle, long baudrate)
 			   speed, errno);
         return -1;
     }
+
+#ifdef MBUS_SERIAL_DEBUG
+    printf("%s: t.c_cflag = %x\n", __func__, term->c_cflag);
+    printf("%s: t.c_oflag = %x\n", __func__, term->c_oflag);
+    printf("%s: t.c_iflag = %x\n", __func__, term->c_iflag);
+    printf("%s: t.c_lflag = %x\n", __func__, term->c_lflag);
+#endif
 
     // Change baud rate immediately
     if (tcsetattr(handle->fd, TCSANOW, &(serial_data->t)) == -1)
