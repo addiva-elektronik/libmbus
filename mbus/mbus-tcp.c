@@ -64,9 +64,6 @@ mbus_tcp_connect(mbus_handle *handle)
         return -1;
     }
 
-    s.sin_family = AF_INET;
-    s.sin_port = htons(port);
-
     /* resolve hostname */
     if ((host_addr = gethostbyname(host)) == NULL)
     {
@@ -74,9 +71,11 @@ mbus_tcp_connect(mbus_handle *handle)
         return -1;
     }
 
-    memcpy((void *)(&s.sin_addr), (void *)(host_addr->h_addr), host_addr->h_length);
+    s.sin_family = AF_INET;
+    s.sin_port = htons(port);
+    s.sin_addr.s_addr = *((unsigned long *)host_addr->h_addr);
 
-    if (connect(handle->fd, (struct sockaddr *)&s, sizeof(s)) < 0)
+    if (connect(handle->fd, (struct sockaddr *)&s, sizeof(s)) == -1)
     {
         mbus_error_str_set("M-Bus tcp failed connecting to %s:%d, error %d", host, port, errno);
         return -1;
