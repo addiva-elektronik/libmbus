@@ -34,6 +34,7 @@
 #include "mbus-protocol.h"
 
 #define PACKET_BUFF_SIZE 2048
+//#define MBUS_SERIAL_DEBUG 1
 
 //------------------------------------------------------------------------------
 /// Set up a serial connection handle.
@@ -389,7 +390,7 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
         }
 
 #ifdef MBUS_SERIAL_DEBUG
-        printf("%s: Attempt to read %d bytes [len = %d]\n", __func__, remaining, len);
+        printf("%s: Attempt to read %d bytes [len = %zd]\n", __func__, remaining, len);
 #endif
 
         if ((nread = read(handle->fd, &buff[len], remaining)) == -1)
@@ -399,7 +400,7 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
         }
 
 #ifdef MBUS_SERIAL_DEBUG
-        printf("%s: Got %d byte [remaining %d, len %d]\n", __func__, nread, remaining, len);
+        printf("%s: Got %zd byte [remaining %d, len %zd]\n", __func__, nread, remaining, len);
 #endif
 
         if (nread == 0)
