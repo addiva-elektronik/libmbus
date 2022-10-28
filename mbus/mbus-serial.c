@@ -50,7 +50,10 @@ mbus_serial_connect(mbus_handle *handle)
 
     serial_data = (mbus_serial_data *) handle->auxdata;
     if (serial_data == NULL || serial_data->device == NULL)
+    {
+        mbus_error_str_set("M-Bus serial handle missing tty data ptr.");
         return -1;
+    }
 
     device = serial_data->device;
     term = &(serial_data->t);
@@ -59,9 +62,10 @@ mbus_serial_connect(mbus_handle *handle)
     //
 
     // Use blocking read and handle it by serial port VMIN/VTIME setting
-    if ((handle->fd = open(device, O_RDWR | O_NOCTTY)) < 0)
+    handle->fd = open(device, O_RDWR | O_NOCTTY);
+    if (handle->fd == -1)
     {
-        fprintf(stderr, "%s: failed to open tty.", __func__);
+        mbus_error_str_set("M-Bus serial failed opening tty %s, error %d", device, errno);
         return -1;
     }
 
@@ -113,12 +117,17 @@ mbus_serial_set_baudrate(mbus_handle *handle, long baudrate)
     mbus_serial_data *serial_data;
 
     if (handle == NULL)
+    {
+        mbus_error_str_set("%s: invalid M-Bus handle.", __func__);
         return -1;
+    }
 
     serial_data = (mbus_serial_data *) handle->auxdata;
-
     if (serial_data == NULL)
+    {
+        mbus_error_str_set("M-Bus serial handle missing tty data ptr.");
         return -1;
+    }
 
     switch (baudrate)
     {
@@ -167,20 +176,25 @@ mbus_serial_set_baudrate(mbus_handle *handle, long baudrate)
     }
 
     // Set input baud rate
-    if (cfsetispeed(&(serial_data->t), speed) != 0)
+    if (cfsetispeed(&(serial_data->t), speed) == -1)
     {
+        mbus_error_str_set("M-Bus serial failed setting input baudrate %d, error %d.",
+			   speed, errno);
         return -1;
     }
 
     // Set output baud rate
-    if (cfsetospeed(&(serial_data->t), speed) != 0)
+    if (cfsetospeed(&(serial_data->t), speed) == -1)
     {
+        mbus_error_str_set("M-Bus serial failed setting output baudrate %d, error %d.",
+			   speed, errno);
         return -1;
     }
 
     // Change baud rate immediately
-    if (tcsetattr(handle->fd, TCSANOW, &(serial_data->t)) != 0)
+    if (tcsetattr(handle->fd, TCSANOW, &(serial_data->t)) == -1)
     {
+        mbus_error_str_set("M-Bus serial failed tcsetattr(), error %d.", errno);
         return -1;
     }
 
@@ -204,13 +218,15 @@ mbus_serial_parity(mbus_handle *handle, int parity)
 
     if (handle == NULL)
     {
+        mbus_error_str_set("M-Bus serial invalid parameter.");
 	return -1;
     }
 
     data = (mbus_serial_data *)handle->auxdata;
     if (data == NULL)
     {
-	return -1;
+        mbus_error_str_set("M-Bus serial handle missing tty data ptr.");
+        return -1;
     }
 
     c = &(data->t);
@@ -242,12 +258,14 @@ mbus_serial_disconnect(mbus_handle *handle)
 {
     if (handle == NULL)
     {
+        mbus_error_str_set("M-Bus serial invalid parameter.");
         return -1;
     }
 
     if (handle->fd < 0)
     {
-       return -1;
+        /* Already closed. */
+        return -1;
     }
 
     close(handle->fd);
@@ -267,6 +285,7 @@ mbus_serial_data_free(mbus_handle *handle)
 
         if (serial_data == NULL)
         {
+	    /* Already freed */
             return;
         }
 
@@ -287,18 +306,21 @@ mbus_serial_send_frame(mbus_handle *handle, mbus_frame *frame)
 
     if (handle == NULL || frame == NULL)
     {
+        mbus_error_str_set("M-Bus serial invalid parameter.");
         return -1;
     }
 
     // Make sure serial connection is open
     if (isatty(handle->fd) == 0)
     {
+        mbus_error_str_set("M-Bus serial connection is not available.");
         return -1;
     }
 
-    if ((len = mbus_frame_pack(frame, buff, sizeof(buff))) == -1)
+    len = mbus_frame_pack(frame, buff, sizeof(buff));
+    if (len < 0)
     {
-        fprintf(stderr, "%s: mbus_frame_pack failed\n", __func__);
+	mbus_error_str_set("M-Bus serial failed mbus_frame_pack(), ret %d", len);
         return -1;
     }
 
@@ -313,21 +335,20 @@ mbus_serial_send_frame(mbus_handle *handle, mbus_frame *frame)
     printf("\n");
 #endif
 
-    if ((ret = write(handle->fd, buff, len)) == len)
+    ret = write(handle->fd, buff, len);
+    if (ret == -1)
     {
-        //
-        // call the send event function, if the callback function is registered
-        //
-        if (handle->send_event)
-	    handle->send_event(MBUS_HANDLE_TYPE_SERIAL, (char *)buff, len);
-    }
-    else
-    {
-        fprintf(stderr, "%s: Failed to write frame to socket (ret = %d: %s)\n", __func__, ret, strerror(errno));
+        mbus_error_str_set("M-Bus serial failed writing frame to socket, error %d", errno);
         return -1;
     }
 
     //
+    // call the send event function, if the callback function is registered
+    //
+    if (handle->send_event)
+        handle->send_event(MBUS_HANDLE_TYPE_SERIAL, (char *)buff, len);
+
+	//
     // wait until complete frame has been transmitted
     //
     tcdrain(handle->fd);
@@ -347,14 +368,14 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
 
     if (handle == NULL || frame == NULL)
     {
-        fprintf(stderr, "%s: Invalid parameter.\n", __func__);
+        mbus_error_str_set("M-Bus serial invalid parameter.");
         return MBUS_RECV_RESULT_ERROR;
     }
 
     // Make sure serial connection is open
     if (isatty(handle->fd) == 0)
     {
-        fprintf(stderr, "%s: Serial connection is not available.\n", __func__);
+        mbus_error_str_set("M-Bus serial connection is not available.");
         return MBUS_RECV_RESULT_ERROR;
     }
 
@@ -371,19 +392,23 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
         if (len + remaining > PACKET_BUFF_SIZE)
         {
             // avoid out of bounds access
+	    mbus_error_str_set("M-Bus serial aborting, too small receive buffer!");
             return MBUS_RECV_RESULT_ERROR;
         }
 
-        //printf("%s: Attempt to read %d bytes [len = %d]\n", __func__, remaining, len);
+#ifdef MBUS_SERIAL_DEBUG
+        printf("%s: Attempt to read %d bytes [len = %d]\n", __func__, remaining, len);
+#endif
 
         if ((nread = read(handle->fd, &buff[len], remaining)) == -1)
         {
-       //     fprintf(stderr, "%s: aborting recv frame (remaining = %d, len = %d, nread = %d)\n",
-         //          __func__, remaining, len, nread);
+            mbus_error_str_set("M-Bus serial aborting receive frame, errno %d\n", errno);
             return MBUS_RECV_RESULT_ERROR;
         }
 
-//   printf("%s: Got %d byte [remaining %d, len %d]\n", __func__, nread, remaining, len);
+#ifdef MBUS_SERIAL_DEBUG
+        printf("%s: Got %d byte [remaining %d, len %d]\n", __func__, nread, remaining, len);
+#endif
 
         if (nread == 0)
         {
@@ -399,6 +424,7 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
         if (len > (SSIZE_MAX-nread))
         {
             // avoid overflow
+	    mbus_error_str_set("M-Bus serial aborting, would overflow buffer!");
             return MBUS_RECV_RESULT_ERROR;
         }
 
@@ -409,6 +435,7 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
     if (len == 0)
     {
         // No data received
+	mbus_error_str_set("M-Bus serial receive timeout!");
         return MBUS_RECV_RESULT_TIMEOUT;
     }
 
@@ -421,13 +448,13 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
     if (remaining != 0)
     {
         // Would be OK when e.g. scanning the bus, otherwise it is a failure.
-        // printf("%s: M-Bus layer failed to receive complete data.\n", __func__);
+	mbus_error_str_set("M-Bus serial failed to receive complete data.");
         return MBUS_RECV_RESULT_INVALID;
     }
 
     if (len == -1)
     {
-        fprintf(stderr, "%s: M-Bus layer failed to parse data.\n", __func__);
+	mbus_error_str_set("M-Bus serial receive failed to parse data.");
         return MBUS_RECV_RESULT_ERROR;
     }
 
