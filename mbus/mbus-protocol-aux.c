@@ -1452,7 +1452,7 @@ mbus_data_variable_xml_normalized(mbus_data_variable *data)
 {
     mbus_data_record *record;
     mbus_record *norm_record;
-    char *buff = NULL, *new_buff = NULL;
+    char *buff = NULL;
     char str_encoded[768] = "";
     size_t len = 0, buff_size = 8192;
     size_t i;
@@ -1476,9 +1476,10 @@ mbus_data_variable_xml_normalized(mbus_data_variable *data)
 
             if ((buff_size - len) < 1024)
             {
-                buff_size *= 2;
-                new_buff = (char*) realloc(buff,buff_size);
+		char *new_buff;
 
+                buff_size *= 2;
+                new_buff = (char*) realloc(buff, buff_size);
                 if (new_buff == NULL)
                 {
                     mbus_record_free(norm_record);
