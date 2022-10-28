@@ -2263,13 +2263,13 @@ mbus_send_ping_frame(mbus_handle *handle, int address, char purge_response)
         return -1;
     }
 
+    mbus_frame_free(frame);
     if (purge_response)
     {
         mbus_purge_frames(handle);
     }
 
-    mbus_frame_free(frame);
-    return retval;
+    return 0;
 }
 
 //------------------------------------------------------------------------------
