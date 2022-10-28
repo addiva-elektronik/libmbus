@@ -2397,7 +2397,7 @@ mbus_probe_secondary_address(mbus_handle *handle, const char *mask, char *matchi
 
 int mbus_read_slave(mbus_handle * handle, mbus_address *address, mbus_frame * reply)
 {
-    if (handle == NULL || address == NULL)
+    if (handle == NULL || address == NULL || reply == NULL)
     {
         mbus_error_str_set("%s: invalid parameter.", __func__);
         return -1;
