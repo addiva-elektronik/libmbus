@@ -27,13 +27,12 @@
 #define MBUS_ERROR(...) fprintf (stderr, __VA_ARGS__)
 
 #ifdef _DEBUG_
-#define MBUS_DEBUG(...) fprintf (stderr, __VA_ARGS__)
+#define MBUS_DEBUG(...) if (debug) fprintf (stderr, __VA_ARGS__)
+static int debug = 0;
 #else
 #define MBUS_DEBUG(...)
 #endif
 /*@end@*/
-
-static int debug = 0;
 
 typedef struct _mbus_variable_vif {
     unsigned     vif;
@@ -2129,8 +2128,7 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
             break;
         }
 
-        if (debug)
-            printf("%s: debug: sending request frame\n", __func__);
+        MBUS_DEBUG("%s: debug: sending request frame\n", __func__);
 
         if (mbus_send_frame(handle, frame) == -1)
         {
@@ -2139,8 +2137,7 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
             break;
         }
 
-        if (debug)
-            printf("%s: debug: receiving response frame #%d\n", __func__, frame_count);
+        MBUS_DEBUG("%s: debug: receiving response frame #%d\n", __func__, frame_count);
 
         result = mbus_recv_frame(handle, next_frame);
 
@@ -2198,8 +2195,7 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
             if (reply_data.data_var.more_records_follow &&
                 ((max_frames > 0) && (frame_count < max_frames))) // only readout max_frames
             {
-                if (debug)
-                    printf("%s: debug: expecting more frames\n", __func__);
+                MBUS_DEBUG("%s: debug: expecting more frames\n", __func__);
 
                 more_frames = 1;
 
@@ -2220,8 +2216,7 @@ mbus_sendrecv_request(mbus_handle *handle, int address, mbus_frame *reply, int m
             }
             else
             {
-                if (debug)
-                    printf("%s: debug: no more frames\n", __func__);
+                MBUS_DEBUG("%s: debug: no more frames\n", __func__);
             }
         }
 
