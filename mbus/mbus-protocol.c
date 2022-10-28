@@ -101,6 +101,23 @@ mbus_error_str_set(char *fmt, ...)
 }
 
 void
+mbus_error_str_ins(char *fmt, ...)
+{
+    va_list ap;
+    size_t len = strlen(error_str) + 1;
+    char tmp[len];
+
+    va_start(ap, fmt);
+    if (fmt)
+    {
+	memcpy(tmp, error_str, len);
+        len = vsnprintf(error_str, sizeof(error_str), fmt, ap);
+	snprintf(&error_str[len], sizeof(error_str) - len, "%s", tmp);
+    }
+    va_end(ap);
+}
+
+void
 mbus_error_reset(void)
 {
     snprintf(error_str, sizeof(error_str), "no errors");

@@ -634,6 +634,7 @@ int mbus_data_variable_print(mbus_data_variable *data);
 
 char *mbus_error_str     (void);
 void  mbus_error_str_set (char *fmt, ...);
+void  mbus_error_str_ins (char *fmt, ...);
 void  mbus_error_reset   (void);
 
 void  mbus_parse_set_debug(int debug);
