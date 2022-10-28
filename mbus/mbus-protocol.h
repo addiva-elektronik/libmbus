@@ -18,28 +18,10 @@
 #ifndef _MBUS_PROTOCOL_H_
 #define _MBUS_PROTOCOL_H_
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
 #include <time.h>
-
-#ifdef HAVE_MATH_H
-#include <math.h>
-#endif
-
-#ifndef HAVE_STRDUP
-# define strdup fs_strdup
-extern char *fs_strdup(const char *str);
-#endif
-
-#ifndef HAVE_POW
-# define pow fs_pow
-extern double fs_pow(double x, double y);
-#endif
 
 #ifdef __cplusplus
 extern "C" {

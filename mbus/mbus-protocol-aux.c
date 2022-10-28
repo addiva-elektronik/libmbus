@@ -23,6 +23,20 @@
 #include "mbus-serial.h"
 #include "mbus-tcp.h"
 
+#ifdef HAVE_MATH_H
+#include <math.h>
+#endif
+
+#ifndef HAVE_STRDUP
+# define strdup fs_strdup
+extern char *fs_strdup(const char *str);
+#endif
+
+#ifndef HAVE_POW
+# define pow fs_pow
+extern double fs_pow(double x, double y);
+#endif
+
 /*@ignore@*/
 #ifdef _DEBUG_
 #define MBUS_DEBUG(...) if (debug) fprintf (stderr, __VA_ARGS__)

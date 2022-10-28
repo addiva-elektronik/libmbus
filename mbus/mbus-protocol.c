@@ -14,6 +14,18 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifdef _HAS_NON_IEEE754_FLOAT
+#ifdef HAVE_MATH_H
+#include <math.h>
+#endif
+
+#ifndef HAVE_POW
+# define pow fs_pow
+extern double fs_pow(double x, double y);
+#endif
+
+#endif /* _HAS_NON_IEEE754_FLOAT */
+
 #include "mbus-protocol.h"
 
 static int parse_debug = 0, debug = 0;
