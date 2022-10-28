@@ -1473,6 +1473,8 @@ mbus_data_variable_xml_normalized(mbus_data_variable *data)
         for (record = data->record, i = 0; record; record = record->next, i++)
         {
             norm_record = mbus_parse_variable_record(record);
+            if (norm_record == NULL)
+                continue;
 
             if ((buff_size - len) < 1024)
             {
@@ -1492,42 +1494,36 @@ mbus_data_variable_xml_normalized(mbus_data_variable *data)
 
             len += snprintf(&buff[len], buff_size - len, "    <DataRecord id=\"%zu\">\n", i);
 
-            if (norm_record != NULL)
-            {
-                mbus_str_xml_encode((unsigned char *)str_encoded, (unsigned char *)norm_record->function_medium, sizeof(str_encoded));
-                len += snprintf(&buff[len], buff_size - len, "        <Function>%s</Function>\n", str_encoded);
+	    mbus_str_xml_encode((unsigned char *)str_encoded, (unsigned char *)norm_record->function_medium, sizeof(str_encoded));
+	    len += snprintf(&buff[len], buff_size - len, "        <Function>%s</Function>\n", str_encoded);
 
-                len += snprintf(&buff[len], buff_size - len, "        <StorageNumber>%ld</StorageNumber>\n", norm_record->storage_number);
+	    len += snprintf(&buff[len], buff_size - len, "        <StorageNumber>%ld</StorageNumber>\n", norm_record->storage_number);
 
-                if (norm_record->tariff >= 0)
-                {
-                    len += snprintf(&buff[len], buff_size - len, "        <Tariff>%ld</Tariff>\n", norm_record->tariff);
-                    len += snprintf(&buff[len], buff_size - len, "        <Device>%d</Device>\n", norm_record->device);
-                }
+	    if (norm_record->tariff >= 0)
+	    {
+		len += snprintf(&buff[len], buff_size - len, "        <Tariff>%ld</Tariff>\n", norm_record->tariff);
+		len += snprintf(&buff[len], buff_size - len, "        <Device>%d</Device>\n", norm_record->device);
+	    }
 
-                mbus_str_xml_encode((unsigned char *)str_encoded, (unsigned char *)norm_record->unit, sizeof(str_encoded));
+	    mbus_str_xml_encode((unsigned char *)str_encoded, (unsigned char *)norm_record->unit, sizeof(str_encoded));
 
-                len += snprintf(&buff[len], buff_size - len, "        <Unit>%s</Unit>\n", str_encoded);
+	    len += snprintf(&buff[len], buff_size - len, "        <Unit>%s</Unit>\n", str_encoded);
 
-                mbus_str_xml_encode((unsigned char *)str_encoded, (unsigned char *)norm_record->quantity, sizeof(str_encoded));
-                len += snprintf(&buff[len], buff_size - len, "        <Quantity>%s</Quantity>\n", str_encoded);
+	    mbus_str_xml_encode((unsigned char *)str_encoded, (unsigned char *)norm_record->quantity, sizeof(str_encoded));
+	    len += snprintf(&buff[len], buff_size - len, "        <Quantity>%s</Quantity>\n", str_encoded);
 
 
-                if (norm_record->is_numeric)
-                {
-                    len += snprintf(&buff[len], buff_size - len, "        <Value>%f</Value>\n", norm_record->value.real_val);
-                }
-                else
-                {
-                    mbus_str_xml_encode((unsigned char *)str_encoded, (unsigned char *)norm_record->value.str_val.value, sizeof(str_encoded));
-                    len += snprintf(&buff[len], buff_size - len, "        <Value>%s</Value>\n", str_encoded);
-                }
+	    if (norm_record->is_numeric)
+	    {
+		len += snprintf(&buff[len], buff_size - len, "        <Value>%f</Value>\n", norm_record->value.real_val);
+	    }
+	    else
+	    {
+		mbus_str_xml_encode((unsigned char *)str_encoded, (unsigned char *)norm_record->value.str_val.value, sizeof(str_encoded));
+		len += snprintf(&buff[len], buff_size - len, "        <Value>%s</Value>\n", str_encoded);
+	    }
 
-                mbus_record_free(norm_record);
-            }
-            else
-            {
-            }
+	    mbus_record_free(norm_record);
 
             len += snprintf(&buff[len], buff_size - len, "    </DataRecord>\n\n");
         }
