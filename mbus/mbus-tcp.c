@@ -37,12 +37,12 @@ static int tcp_timeout_usec = 0;
 int
 mbus_tcp_connect(mbus_handle *handle)
 {
-    char error_str[128], *host;
     struct hostent *host_addr;
     struct sockaddr_in s;
     struct timeval time_out;
     mbus_tcp_data *tcp_data;
     uint16_t port;
+    char *host;
 
     if (handle == NULL)
         return -1;
@@ -57,10 +57,10 @@ mbus_tcp_connect(mbus_handle *handle)
     //
     // create the TCP connection
     //
-    if ((handle->fd = socket(AF_INET,SOCK_STREAM, 0)) < 0)
+    handle->fd = socket(AF_INET, SOCK_STREAM, 0);
+    if (handle->fd == -1)
     {
-        snprintf(error_str, sizeof(error_str), "%s: failed to setup a socket.", __func__);
-        mbus_error_str_set(error_str);
+	mbus_error_str_set("M-Bus tcp failed opening socket, error %d", errno);
         return -1;
     }
 
@@ -70,8 +70,7 @@ mbus_tcp_connect(mbus_handle *handle)
     /* resolve hostname */
     if ((host_addr = gethostbyname(host)) == NULL)
     {
-        snprintf(error_str, sizeof(error_str), "%s: unknown host: %s", __func__, host);
-        mbus_error_str_set(error_str);
+        mbus_error_str_set("M-Bus unknown host %s, error %d", host, h_errno);
         return -1;
     }
 
@@ -79,8 +78,7 @@ mbus_tcp_connect(mbus_handle *handle)
 
     if (connect(handle->fd, (struct sockaddr *)&s, sizeof(s)) < 0)
     {
-        snprintf(error_str, sizeof(error_str), "%s: Failed to establish connection to %s:%d", __func__, host, port);
-        mbus_error_str_set(error_str);
+        mbus_error_str_set("M-Bus tcp failed connecting to %s:%d, error %d", host, port, errno);
         return -1;
     }
 
@@ -146,7 +144,6 @@ mbus_tcp_send_frame(mbus_handle *handle, mbus_frame *frame)
 {
     unsigned char buff[PACKET_BUFF_SIZE];
     int len, ret;
-    char error_str[128];
 
     if (handle == NULL || frame == NULL)
     {
@@ -155,25 +152,22 @@ mbus_tcp_send_frame(mbus_handle *handle, mbus_frame *frame)
 
     if ((len = mbus_frame_pack(frame, buff, sizeof(buff))) == -1)
     {
-        snprintf(error_str, sizeof(error_str), "%s: mbus_frame_pack failed\n", __func__);
-        mbus_error_str_set(error_str);
+        mbus_error_str_set("M-Bus tcp failed mbus_frame_pack()");
         return -1;
     }
 
-    if ((ret = write(handle->fd, buff, len)) == len)
+    ret = write(handle->fd, buff, len);
+    if (ret == -1)
     {
-        //
-        // call the send event function, if the callback function is registered
-        //
-        if (handle->send_event)
-	    handle->send_event(MBUS_HANDLE_TYPE_TCP, (char *)buff, len);
-    }
-    else
-    {
-        snprintf(error_str, sizeof(error_str), "%s: Failed to write frame to socket (ret = %d)\n", __func__, ret);
-        mbus_error_str_set(error_str);
+        mbus_error_str_set("M-Bus tcp failed writing frame to socket, error %d", errno);
         return -1;
     }
+
+    //
+    // call the send event function, if the callback function is registered
+    //
+    if (handle->send_event)
+	handle->send_event(MBUS_HANDLE_TYPE_TCP, (char *)buff, len);
 
     return 0;
 }
@@ -259,7 +253,7 @@ mbus_tcp_set_timeout_set(double seconds)
 {
     if (seconds < 0.0)
     {
-        mbus_error_str_set("Invalid timeout (must be positive).");
+        mbus_error_str_set("M-Bus tcp invalid timeout (must be positive).");
         return -1;
     }
 

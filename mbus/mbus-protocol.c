@@ -379,10 +379,9 @@ mbus_frame_verify(mbus_frame *frame)
                 return frame->start1 == MBUS_FRAME_ACK_START;
 
             case MBUS_FRAME_TYPE_SHORT:
-                if(frame->start1 != MBUS_FRAME_SHORT_START)
+                if (frame->start1 != MBUS_FRAME_SHORT_START)
                 {
-                    snprintf(error_str, sizeof(error_str), "No frame start");
-
+                    mbus_error_str_set("No frame start");
                     return -1;
                 }
 
@@ -392,8 +391,7 @@ mbus_frame_verify(mbus_frame *frame)
                     (frame->control !=  MBUS_CONTROL_MASK_REQ_UD2)                          &&
                     (frame->control != (MBUS_CONTROL_MASK_REQ_UD2 | MBUS_CONTROL_MASK_FCB)))
                 {
-                    snprintf(error_str, sizeof(error_str), "Unknown Control Code 0x%.2x", frame->control);
-
+                    mbus_error_str_set("Unknown Control Code 0x%.2x", frame->control);
                     return -1;
                 }
 
@@ -404,8 +402,7 @@ mbus_frame_verify(mbus_frame *frame)
                 if(frame->start1  != MBUS_FRAME_CONTROL_START ||
                    frame->start2  != MBUS_FRAME_CONTROL_START)
                 {
-                    snprintf(error_str, sizeof(error_str), "No frame start");
-
+                    mbus_error_str_set("No frame start");
                     return -1;
                 }
 
@@ -416,54 +413,47 @@ mbus_frame_verify(mbus_frame *frame)
                     (frame->control != (MBUS_CONTROL_MASK_RSP_UD | MBUS_CONTROL_MASK_ACD)) &&
                     (frame->control != (MBUS_CONTROL_MASK_RSP_UD | MBUS_CONTROL_MASK_DFC | MBUS_CONTROL_MASK_ACD)))
                 {
-                    snprintf(error_str, sizeof(error_str), "Unknown Control Code 0x%.2x", frame->control);
-
+                    mbus_error_str_set("Unknown Control Code 0x%.2x", frame->control);
                     return -1;
                 }
 
                 if (frame->length1 != frame->length2)
                 {
-                    snprintf(error_str, sizeof(error_str), "Frame length 1 != 2");
-
+                    mbus_error_str_set("Frame length 1 != 2");
                     return -1;
                 }
 
                 if (frame->length1 != calc_length(frame))
                 {
-                    snprintf(error_str, sizeof(error_str), "Frame length 1 != calc length");
-
+                    mbus_error_str_set("Frame length 1 != calc length");
                     return -1;
                 }
 
                 break;
 
             default:
-                snprintf(error_str, sizeof(error_str), "Unknown frame type 0x%.2x", frame->type);
-
+                mbus_error_str_set("Unknown frame type 0x%.2x", frame->type);
                 return -1;
         }
 
-        if(frame->stop != MBUS_FRAME_STOP)
+        if (frame->stop != MBUS_FRAME_STOP)
         {
-            snprintf(error_str, sizeof(error_str), "No frame stop");
-
+            mbus_error_str_set("No frame stop");
             return -1;
         }
 
         checksum = calc_checksum(frame);
 
-        if(frame->checksum != checksum)
+        if (frame->checksum != checksum)
         {
-            snprintf(error_str, sizeof(error_str), "Invalid checksum (0x%.2x != 0x%.2x)", frame->checksum, checksum);
-
+            mbus_error_str_set("Invalid checksum (0x%.2x != 0x%.2x)", frame->checksum, checksum);
             return -1;
         }
 
         return 0;
     }
 
-    snprintf(error_str, sizeof(error_str), "Got null pointer to frame.");
-
+    mbus_error_str_set("Got null pointer to frame.");
     return -1;
 }
 
@@ -2420,7 +2410,6 @@ mbus_vif_unit_lookup(unsigned char vif)
             break;
     }
 
-
     return buff;
 }
 
@@ -3599,10 +3588,8 @@ mbus_parse(mbus_frame *frame, unsigned char *data, size_t data_size)
 
                 if (data_size != MBUS_FRAME_BASE_SIZE_SHORT)
                 {
-                    snprintf(error_str, sizeof(error_str), "Too much data in frame.");
-
-                    // too much data... ?
-                    return -2;
+                    mbus_error_str_set("Too much data in frame.");
+                    return -2;  // too much data... ?
                 }
 
                 // init frame data structure
@@ -3639,18 +3626,14 @@ mbus_parse(mbus_frame *frame, unsigned char *data, size_t data_size)
 
                 if (frame->length1 < 3)
                 {
-                    snprintf(error_str, sizeof(error_str), "Invalid M-Bus frame length.");
-
-                    // not a valid M-bus frame
-                    return -2;
+                    mbus_error_str_set("Invalid M-Bus frame length.");
+                    return -2;	// not a valid M-bus frame
                 }
 
                 if (frame->length1 != frame->length2)
                 {
-                    snprintf(error_str, sizeof(error_str), "Invalid M-Bus frame length.");
-
-                    // not a valid M-bus frame
-                    return -2;
+                    mbus_error_str_set("Invalid M-Bus frame length.");
+                    return -2;	// not a valid M-bus frame
                 }
 
                 // check length of packet:
@@ -3664,10 +3647,8 @@ mbus_parse(mbus_frame *frame, unsigned char *data, size_t data_size)
 
                 if (data_size > (size_t)(MBUS_FRAME_FIXED_SIZE_LONG + len))
                 {
-                    snprintf(error_str, sizeof(error_str), "Too much data in frame.");
-
-                    // too much data... ?
-                    return -2;
+                    mbus_error_str_set("Too much data in frame.");
+                    return -2;	// too much data... ?
                 }
 
                 // we got the whole packet, continue parsing
@@ -3702,17 +3683,15 @@ mbus_parse(mbus_frame *frame, unsigned char *data, size_t data_size)
 
                 // successfully parsed data
                 return 0;
-            default:
-                snprintf(error_str, sizeof(error_str), "Invalid M-Bus frame start.");
 
-                // not a valid M-Bus frame header (start byte)
-                return -4;
+            default:
+                mbus_error_str_set("Invalid M-Bus frame start.");
+                return -4; // not a valid M-Bus frame header (start byte)
         }
 
     }
 
-    snprintf(error_str, sizeof(error_str), "Got null pointer to frame, data or zero data_size.");
-
+    mbus_error_str_set("Got null pointer to frame, data or zero data_size.");
     return -1;
 }
 
@@ -3727,7 +3706,7 @@ mbus_data_fixed_parse(mbus_frame *frame, mbus_data_fixed *data)
     {
         if (frame->data_size != MBUS_DATA_FIXED_LENGTH)
         {
-            snprintf(error_str, sizeof(error_str), "Invalid length for fixed data.");
+            mbus_error_str_set("Invalid length for fixed data.");
             return -1;
         }
 
@@ -3772,9 +3751,9 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
         data->more_records_follow = 0;
         i = MBUS_DATA_VARIABLE_HEADER_LENGTH;
 
-        if(frame->data_size < i)
+        if (frame->data_size < i)
         {
-            snprintf(error_str, sizeof(error_str), "Variable header too short.");
+            mbus_error_str_set("Variable header too short.");
             return -1;
         }
 
@@ -3852,7 +3831,7 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
                 if (record->drh.dib.ndife >= MBUS_DATA_INFO_BLOCK_DIFE_SIZE)
                 {
                     mbus_data_record_free(record);
-                    snprintf(error_str, sizeof(error_str), "Too many DIFE.");
+                    mbus_error_str_set("Too many DIFE.");
                     return -1;
                 }
 
@@ -3866,8 +3845,8 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
 
             if (i > frame->data_size)
             {
+                mbus_error_str_set("Premature end of record at DIF.");
                 mbus_data_record_free(record);
-                snprintf(error_str, sizeof(error_str), "Premature end of record at DIF.");
                 return -1;
             }
 
@@ -3883,15 +3862,15 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
                 var_vif_len = frame->data[i++];
                 if (var_vif_len > MBUS_VALUE_INFO_BLOCK_CUSTOM_VIF_SIZE)
                 {
+                    mbus_error_str_set("Too long variable length VIF.");
                     mbus_data_record_free(record);
-                    snprintf(error_str, sizeof(error_str), "Too long variable length VIF.");
                     return -1;
                 }
 
                 if (i + var_vif_len > frame->data_size)
                 {
+                    mbus_error_str_set("Premature end of record at variable length VIF.");
                     mbus_data_record_free(record);
-                    snprintf(error_str, sizeof(error_str), "Premature end of record at variable length VIF.");
                     return -1;
                 }
                 mbus_data_str_decode(record->drh.vib.custom_vif, &(frame->data[i]), var_vif_len);
@@ -3913,8 +3892,8 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
 
                     if (record->drh.vib.nvife >= MBUS_VALUE_INFO_BLOCK_VIFE_SIZE)
                     {
+                        mbus_error_str_set("Too many VIFE.");
                         mbus_data_record_free(record);
-                        snprintf(error_str, sizeof(error_str), "Too many VIFE.");
                         return -1;
                     }
 
@@ -3929,8 +3908,8 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
 
             if (i > frame->data_size)
             {
+                mbus_error_str_set("Premature end of record at VIF.");
                 mbus_data_record_free(record);
-                snprintf(error_str, sizeof(error_str), "Premature end of record at VIF.");
                 return -1;
             }
 
@@ -3951,8 +3930,8 @@ mbus_data_variable_parse(mbus_frame *frame, mbus_data_variable *data)
 
             if (i + record->data_len > frame->data_size)
             {
+                mbus_error_str_set("Premature end of record at data.");
                 mbus_data_record_free(record);
-                snprintf(error_str, sizeof(error_str), "Premature end of record at data.");
                 return -1;
             }
 
@@ -3984,13 +3963,13 @@ mbus_frame_data_parse(mbus_frame *frame, mbus_frame_data *data)
 
     if (frame == NULL)
     {
-        snprintf(error_str, sizeof(error_str), "Got null pointer to frame.");
+	mbus_error_str_set("Got fram null pointer.");
         return -1;
     }
 
     if (data == NULL)
     {
-        snprintf(error_str, sizeof(error_str), "Got null pointer to data.");
+	mbus_error_str_set("Got data null pointer.");
         return -1;
     }
 
@@ -4017,8 +3996,7 @@ mbus_frame_data_parse(mbus_frame *frame, mbus_frame_data *data)
         {
             if (frame->data_size == 0)
             {
-                snprintf(error_str, sizeof(error_str), "Got zero data_size.");
-
+                mbus_error_str_set("Got zero data_size.");
                 return -1;
             }
 
@@ -4029,8 +4007,7 @@ mbus_frame_data_parse(mbus_frame *frame, mbus_frame_data *data)
         {
             if (frame->data_size == 0)
             {
-                snprintf(error_str, sizeof(error_str), "Got zero data_size.");
-
+                mbus_error_str_set("Got zero data_size.");
                 return -1;
             }
 
@@ -4039,14 +4016,12 @@ mbus_frame_data_parse(mbus_frame *frame, mbus_frame_data *data)
         }
         else
         {
-            snprintf(error_str, sizeof(error_str), "Unknown control information 0x%.2x", frame->control_information);
-
+            mbus_error_str_set("Unknown control information 0x%.2x", frame->control_information);
             return -1;
         }
     }
 
-    snprintf(error_str, sizeof(error_str), "Wrong direction in frame (master to slave)");
-
+    mbus_error_str_set("Wrong direction in frame (master to slave)");
     return -1;
 }
 
@@ -5166,23 +5141,21 @@ mbus_frame_get_secondary_address(mbus_frame *frame)
 
     if (!frame)
     {
-        snprintf(error_str, sizeof(error_str), "%s: missing argument.", __func__);
+        mbus_error_str_set("missing argument.", __func__);
 	return NULL;
+    }
+
+    if (frame->control_information != MBUS_CONTROL_INFO_RESP_VARIABLE)
+    {
+        mbus_error_str_set("non-variable data response (can't get secondary address from response).");
+        return NULL;
     }
 
     data = mbus_frame_data_new();
     if (data == NULL)
     {
-        snprintf(error_str, sizeof(error_str),
-                 "%s: Failed to allocate data structure [%p, %p].",
-		 __func__, (void *)frame, (void *)data);
-        return NULL;
-    }
-
-    if (frame->control_information != MBUS_CONTROL_INFO_RESP_VARIABLE)
-    {
-        snprintf(error_str, sizeof(error_str), "Non-variable data response (can't get secondary address from response).");
-        mbus_frame_data_free(data);
+        mbus_error_str_set("%s: failed allocating data structure [%p, %p].",
+			   __func__, (void *)frame, (void *)data);
         return NULL;
     }
 
@@ -5217,13 +5190,13 @@ mbus_frame_select_secondary_pack(mbus_frame *frame, char *address)
 
     if (frame == NULL || address == NULL)
     {
-        snprintf(error_str, sizeof(error_str), "%s: frame or address arguments are NULL.", __func__);
+        mbus_error_str_set("frame or address arguments are NULL.");
         return -1;
     }
 
     if (mbus_is_secondary_address(address) == 0)
     {
-        snprintf(error_str, sizeof(error_str), "%s: address is invalid.", __func__);
+        mbus_error_str_set("address is invalid.");
         return -1;
     }
 

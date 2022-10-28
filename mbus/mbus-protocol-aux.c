@@ -1563,7 +1563,6 @@ mbus_context_serial(const char *device)
 {
     mbus_handle *handle;
     mbus_serial_data *serial_data;
-    char error_str[128];
 
     if ((handle = (mbus_handle *) malloc(sizeof(mbus_handle))) == NULL)
     {
@@ -1573,8 +1572,7 @@ mbus_context_serial(const char *device)
 
     if ((serial_data = (mbus_serial_data *)malloc(sizeof(mbus_serial_data))) == NULL)
     {
-        snprintf(error_str, sizeof(error_str), "%s: failed to allocate memory for handle\n", __func__);
-        mbus_error_str_set(error_str);
+        mbus_error_str_set("%s: failed allocating serial data.", __func__);
         free(handle);
         return NULL;
     }
@@ -1596,8 +1594,7 @@ mbus_context_serial(const char *device)
 
     if ((serial_data->device = strdup(device)) == NULL)
     {
-        snprintf(error_str, sizeof(error_str), "%s: failed to allocate memory for device\n", __func__);
-        mbus_error_str_set(error_str);
+        mbus_error_str_set("%s: failed allocating device %s.", __func__, device);
         free(serial_data);
         free(handle);
         return NULL;
@@ -1611,7 +1608,6 @@ mbus_context_tcp(const char *host, uint16_t port)
 {
     mbus_handle *handle;
     mbus_tcp_data *tcp_data;
-    char error_str[128];
 
     if ((handle = (mbus_handle *) malloc(sizeof(mbus_handle))) == NULL)
     {
@@ -1621,8 +1617,7 @@ mbus_context_tcp(const char *host, uint16_t port)
 
     if ((tcp_data = (mbus_tcp_data *)malloc(sizeof(mbus_tcp_data))) == NULL)
     {
-        snprintf(error_str, sizeof(error_str), "%s: failed to allocate memory for handle\n", __func__);
-        mbus_error_str_set(error_str);
+        mbus_error_str_set("%s: failed allocating TCP data.", __func__);
         free(handle);
         return NULL;
     }
@@ -1645,8 +1640,7 @@ mbus_context_tcp(const char *host, uint16_t port)
     tcp_data->port = port;
     if ((tcp_data->host = strdup(host)) == NULL)
     {
-        snprintf(error_str, sizeof(error_str), "%s: failed to allocate memory for host\n", __func__);
-        mbus_error_str_set(error_str);
+	mbus_error_str_set("%s: failed allocating host %s.", __func__, host);
         free(tcp_data);
         free(handle);
         return NULL;
