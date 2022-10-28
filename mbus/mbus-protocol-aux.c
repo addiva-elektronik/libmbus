@@ -806,22 +806,23 @@ int mbus_fixed_normalize(int medium_unit, long medium_value, char **unit_out, do
             *quantity_out = strdup("Time");
             break;
 
-    default:
-        for (size_t i = 0; fixed_table[i].vif < 0xfff; ++i)
-        {
-	    if (fixed_table[i].vif == (unsigned)medium_unit)
-            {
-                *unit_out = strdup(fixed_table[i].unit);
-                *value_out = ((double) (medium_value)) * fixed_table[i].exponent;
-                *quantity_out = strdup(fixed_table[i].quantity);
-                return 0;
-            }
-        }
+        default:
+	    for (size_t i = 0; fixed_table[i].vif < 0xfff; ++i)
+	    {
+		if (fixed_table[i].vif == (unsigned)medium_unit)
+		{
+		    *unit_out = strdup(fixed_table[i].unit);
+		    *value_out = ((double) (medium_value)) * fixed_table[i].exponent;
+		    *quantity_out = strdup(fixed_table[i].quantity);
+		    return 0;
+		}
+	    }
 
-        *unit_out = strdup("Unknown");
-        *quantity_out = strdup("Unknown");
-        *value_out = 0.0;
-        return -1;
+	    mbus_error_str_set("%s: unknown medium unit", __func__);
+	    *unit_out = strdup("Unknown");
+	    *quantity_out = strdup("Unknown");
+	    *value_out = 0.0;
+	    return -1;
     }
 
     return -2;
