@@ -2021,7 +2021,7 @@ mbus_send_user_data_frame(mbus_handle * handle, int address, const unsigned char
 
     if ((data_size > MBUS_FRAME_DATA_LENGTH) || (data_size == 0))
     {
-        mbus_error_str_set("%s: illegal data_size %zu\n", __func__, data_size);
+        mbus_error_str_set("%s: illegal data_size %zu.", __func__, data_size);
         return -1;
     }
 
