@@ -500,7 +500,22 @@ char * mbus_frame_data_xml_normalized(mbus_frame_data *data);
 
 /**
  * Iterate over secondary addresses, send a probe package to all addresses matching
- * the given addresses mask.
+ * the given addresses mask.  For each match, the callback is called with the found
+ * address and matching mask, respectively.
+ *
+ * @param handle      Initialized handle
+ * @param pos         current address
+ * @param addr_mask   address mask to
+ * @param cb          Callback should return 0 to continue search non-zero to end it
+ *
+ * @return zero when OK
+ */
+int
+mbus_probe_secondary_range(mbus_handle *handle, int pos, char *addr_mask, int (*cb)(const char *, const char *));
+
+/**
+ * Iterate over secondary addresses, using mbus_probe_secondary_range(), each found
+ * address is printed to stdout.
  *
  * @param handle      Initialized handle
  * @param pos         current address
