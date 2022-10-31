@@ -935,7 +935,7 @@ mbus_decode_manufacturer(unsigned char byte1, unsigned char byte2)
 const char *
 mbus_data_product_name(mbus_data_variable_header *header)
 {
-    static char buff[128];
+    static char buff[40];
     unsigned int manufacturer;
 
     memset(buff, 0, sizeof(buff));
@@ -1418,7 +1418,7 @@ mbus_data_product_name(mbus_data_variable_header *header)
 const char *
 mbus_data_fixed_medium(mbus_data_fixed *data)
 {
-    static char buff[256];
+    static char buff[20];
 
     if (data)
     {
@@ -1529,7 +1529,7 @@ mbus_data_fixed_medium(mbus_data_fixed *data)
 const char *
 mbus_data_fixed_unit(int medium_unit_byte)
 {
-    static char buff[256];
+    static char buff[22];
 
     switch (medium_unit_byte & 0x3F)
     {
@@ -1801,7 +1801,7 @@ mbus_data_fixed_unit(int medium_unit_byte)
 const char *
 mbus_data_variable_medium_lookup(unsigned char medium)
 {
-    static char buff[256];
+    static char buff[32];
 
     switch (medium)
     {
@@ -1997,7 +1997,7 @@ mbus_data_variable_medium_lookup(unsigned char medium)
 const char *
 mbus_unit_prefix(int exp)
 {
-    static char buff[256];
+    static char buff[30];
 
     switch (exp)
     {
@@ -2107,7 +2107,7 @@ mbus_dif_datalength_lookup(unsigned char dif)
 const char *
 mbus_vif_unit_lookup(unsigned char vif)
 {
-    static char buff[256];
+    static char buff[64];
     int n;
 
     switch (vif & MBUS_DIB_VIF_WITHOUT_EXTENSION) // ignore the extension bit in this selection
@@ -2434,7 +2434,7 @@ mbus_vif_unit_lookup(unsigned char vif)
 const char *
 mbus_data_error_lookup(int error)
 {
-    static char buff[256];
+    static char buff[30];
 
     switch (error)
     {
@@ -2777,7 +2777,7 @@ mbus_vib_unit_lookup_fb(mbus_value_information_block *vib)
 static const char *
 mbus_vib_unit_lookup_fd(mbus_value_information_block *vib)
 {
-    static char buff[256];
+    static char buff[128];
     int n;
 
     // ignore the extension bit in this selection
@@ -3163,7 +3163,7 @@ mbus_vib_unit_lookup(mbus_value_information_block *vib)
 const char *
 mbus_data_record_decode(mbus_data_record *record)
 {
-    static char buff[768];
+    static char buff[128];
     unsigned char vif, vife;
 
     if (record)
@@ -3392,7 +3392,7 @@ mbus_data_record_decode(mbus_data_record *record)
 const char *
 mbus_data_record_unit(mbus_data_record *record)
 {
-    static char buff[128];
+    static char buff[256];
 
     if (record)
     {
@@ -3410,12 +3410,11 @@ mbus_data_record_unit(mbus_data_record *record)
 const char *
 mbus_data_record_value(mbus_data_record *record)
 {
-    static char buff[768];
+    static char buff[128];
 
     if (record)
     {
         snprintf(buff, sizeof(buff), "%s", mbus_data_record_decode(record));
-
         return buff;
     }
 
@@ -3500,7 +3499,7 @@ int mbus_data_record_device(mbus_data_record *record)
 const char *
 mbus_data_record_function(mbus_data_record *record)
 {
-    static char buff[128];
+    static char buff[25];
 
     if (record)
     {
@@ -3539,7 +3538,7 @@ mbus_data_record_function(mbus_data_record *record)
 const char *
 mbus_data_fixed_function(int status)
 {
-    static char buff[128];
+    static char buff[13];
 
     snprintf(buff, sizeof(buff), "%s",
             (status & MBUS_DATA_FIXED_STATUS_DATE_MASK) == MBUS_DATA_FIXED_STATUS_DATE_STORED ?
@@ -4584,8 +4583,8 @@ mbus_str_xml_encode(unsigned char *dst, const unsigned char *src, size_t max_len
 char *
 mbus_data_variable_header_xml(mbus_data_variable_header *header)
 {
-    static char buff[8192];
-    char str_encoded[768];
+    static char buff[1024];
+    char str_encoded[256];
     size_t len = 0;
 
     if (header)
@@ -4621,8 +4620,8 @@ mbus_data_variable_header_xml(mbus_data_variable_header *header)
 char *
 mbus_data_variable_record_xml(mbus_data_record *record, int record_cnt, int frame_cnt, mbus_data_variable_header *header)
 {
-    static char buff[8192];
-    char str_encoded[768];
+    static char buff[1024];
+    char str_encoded[256];
     char timestamp[28];
     size_t len = 0;
     struct tm * tm;
@@ -4839,7 +4838,7 @@ mbus_data_error_xml(int error)
 {
     char *buff = NULL;
     char str_encoded[256];
-    size_t len = 0, buff_size = 8192;
+    size_t len = 0, buff_size = 512;
 
     buff = (char*) malloc(buff_size);
 
@@ -4956,7 +4955,7 @@ mbus_frame_xml(mbus_frame *frame)
             // the same for each frame in a sequence of a multi-telegram
             // transfer.
             len += snprintf(&buff[len], buff_size - len, "%s",
-                                    mbus_data_variable_header_xml(&(frame_data.data_var.header)));
+			    mbus_data_variable_header_xml(&(frame_data.data_var.header)));
 
             // loop through all records in the current frame, using a global
             // record count as record ID in the XML output
