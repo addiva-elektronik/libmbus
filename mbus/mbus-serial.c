@@ -216,7 +216,7 @@ mbus_serial_set_baudrate(mbus_handle *handle, long baudrate)
 // parity: 0 - off, 1 - odd, 2 - even (default: odd according to M-Bus std)
 //------------------------------------------------------------------------------
 int
-mbus_serial_parity(mbus_handle *handle, int parity)
+mbus_serial_set_parity(mbus_handle *handle, int parity)
 {
     mbus_serial_data *data;
     struct termios *c;

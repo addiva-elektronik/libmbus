@@ -49,7 +49,7 @@ int  mbus_serial_disconnect(mbus_handle *handle);
 int  mbus_serial_send_frame(mbus_handle *handle, mbus_frame *frame);
 int  mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame);
 int  mbus_serial_set_baudrate(mbus_handle *handle, long baudrate);
-int  mbus_serial_parity(mbus_handle *handle, int parity);
+int  mbus_serial_set_parity(mbus_handle *handle, int parity);
 void mbus_serial_data_free(mbus_handle *handle);
 
 #ifdef __cplusplus
