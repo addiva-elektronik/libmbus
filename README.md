@@ -44,6 +44,59 @@ Building
 > is available in `lib/pow.c`.
 
 
+Memory Usage
+------------
+
+The library is fairly conservative with RAM, below is a run using an
+example [M-Bus master]() that talks to an example [M-Bus device]()
+over a [virtual serial bus]().  Memory usage has been analyzed with
+the valgrind tool massif.
+
+An example run where the master sends a data request to the device
+and prints it in verbose format (default: raw HEX dump), toggles to
+XML output and does the same request.
+
+> **Note:** below stack usage in this run peaks at 4416 bytes, which was
+> determined to occur in the C runtime (crt0) well before the `main()`
+> function is started.  In some runs the stack peaked in crt0 at 7736
+> bytes (!) before falling back to reasonable levels in `main()`.
+
+```
+$ ./vsb -n 2 & sleep 1
+vsb: device 1 => /dev/pts/8
+vsb: device 2 => /dev/pts/9
+$ ../mbus-device/mbus-device -a 5 /dev/pts/9 -f ~/src/libmbus/test/test-frames/abb_delta.hex &
+$ valgrind --tool=massif --stacks=yes ./mbus-master /dev/pts/8 -v
+...
+> req 5
+...
+> xml
+> req 5
+...
+$ ms_print massif.out.842178
+--------------------------------------------------------------------------------
+  n        time(i)         total(B)   useful-heap(B) extra-heap(B)    stacks(B)
+--------------------------------------------------------------------------------
+  0              0                0                0             0            0
+  1          2,598              512                0             0          512
+  2         40,725              512                0             0          512
+  3         51,678            1,520                0             0        1,520
+  4         75,611            4,416                0             0        4,416
+  5         92,251            1,376                0             0        1,376
+... before main() has started, inside crt0.o somewhere, seen up to 7,736 stack!
+ 37        720,368           21,016           17,019           301        3,696
+ 38        737,529           25,496           23,006           346        2,144
+ 39        755,851           22,672           18,520           400        3,752
+...
+ 52        960,449           21,552           18,520           400        2,632
+...
+ 63        989,236            5,776            3,728           152        1,896
+ 64        991,834            4,136            3,549           115          472
+ 65        994,435              504                0             0          504
+--------------------------------------------------------------------------------
+```
+
+
 Origin & References
 -------------------
 
