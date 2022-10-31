@@ -407,7 +407,7 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
 
         if ((nread = read(handle->fd, &buff[len], remaining)) == -1)
         {
-            mbus_error_str_set("M-Bus serial aborting receive frame, errno %d\n", errno);
+            mbus_error_str_set("M-Bus serial aborting receive frame, errno %d", errno);
             return MBUS_RECV_RESULT_ERROR;
         }
 
