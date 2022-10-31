@@ -3163,7 +3163,7 @@ mbus_vib_unit_lookup(mbus_value_information_block *vib)
 const char *
 mbus_data_record_decode(mbus_data_record *record)
 {
-    static char buff[128];
+    static char buff[768];
     unsigned char vif, vife;
 
     if (record)
@@ -3410,7 +3410,7 @@ mbus_data_record_unit(mbus_data_record *record)
 const char *
 mbus_data_record_value(mbus_data_record *record)
 {
-    static char buff[128];
+    static char buff[768];
 
     if (record)
     {
@@ -4583,8 +4583,8 @@ mbus_str_xml_encode(unsigned char *dst, const unsigned char *src, size_t max_len
 char *
 mbus_data_variable_header_xml(mbus_data_variable_header *header)
 {
-    static char buff[1024];
-    char str_encoded[256];
+    static char buff[8192];
+    char str_encoded[768];
     size_t len = 0;
 
     if (header)
@@ -4620,8 +4620,8 @@ mbus_data_variable_header_xml(mbus_data_variable_header *header)
 char *
 mbus_data_variable_record_xml(mbus_data_record *record, int record_cnt, int frame_cnt, mbus_data_variable_header *header)
 {
-    static char buff[1024];
-    char str_encoded[256];
+    static char buff[8192];
+    char str_encoded[768];
     char timestamp[28];
     size_t len = 0;
     struct tm * tm;
