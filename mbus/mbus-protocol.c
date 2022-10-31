@@ -3984,6 +3984,7 @@ mbus_frame_data_parse(mbus_frame *frame, mbus_frame_data *data)
         return -1;
     }
 
+    memset(data, 0, sizeof(*data));
     direction = (frame->control & MBUS_CONTROL_MASK_DIR);
 
     if (direction == MBUS_CONTROL_MASK_DIR_S2M)
