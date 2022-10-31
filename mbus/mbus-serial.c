@@ -39,7 +39,7 @@
 #include "mbus-protocol-aux.h"
 #include "mbus-protocol.h"
 
-#define PACKET_BUFF_SIZE 2048
+#define PACKET_BUFF_SIZE 384
 //#define MBUS_SERIAL_DEBUG 1
 
 //------------------------------------------------------------------------------
@@ -318,7 +318,7 @@ mbus_serial_send_frame(mbus_handle *handle, mbus_frame *frame)
     // Make sure serial connection is open
     if (isatty(handle->fd) == 0)
     {
-        mbus_error_str_set("M-Bus serial connection is not available.");
+        mbus_error_str_set("M-Bus serial connection is not available, error %d.", errno);
         return -1;
     }
 
@@ -380,7 +380,7 @@ mbus_serial_recv_frame(mbus_handle *handle, mbus_frame *frame)
     // Make sure serial connection is open
     if (isatty(handle->fd) == 0)
     {
-        mbus_error_str_set("M-Bus serial connection is not available.");
+        mbus_error_str_set("M-Bus serial connection is not available, error %d.", errno);
         return MBUS_RECV_RESULT_ERROR;
     }
 
