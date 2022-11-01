@@ -507,11 +507,12 @@ char * mbus_frame_data_xml_normalized(mbus_frame_data *data);
  * @param pos         current address
  * @param addr_mask   address mask to
  * @param cb          Callback should return 0 to continue search non-zero to end it
+ * @param arg         First argument to user callback function, optional
  *
  * @return zero when OK
  */
 int
-mbus_probe_secondary_range(mbus_handle *handle, int pos, char *addr_mask, int (*cb)(const char *, const char *));
+mbus_probe_secondary_range(mbus_handle *handle, int pos, char *addr_mask, int (*cb)(void *, const char *, const char *), void *arg);
 
 /**
  * Iterate over secondary addresses, using mbus_probe_secondary_range(), each found

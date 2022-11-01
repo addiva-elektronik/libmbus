@@ -2482,7 +2482,7 @@ int mbus_read_slave(mbus_handle * handle, mbus_address *address, mbus_frame * re
 // algorithm.  Call cb() with the found address and the matching mask.
 // ------------------------------------------------------------------------------
 int
-mbus_probe_secondary_range(mbus_handle *handle, int pos, char *addr_mask, int (*cb)(const char *, const char *))
+mbus_probe_secondary_range(mbus_handle *handle, int pos, char *addr_mask, int (*cb)(void *, const char *, const char *), void *arg)
 {
     int i, i_start = 0, i_end = 0, probe_ret;
     char *mask, matching_mask[17];
@@ -2548,7 +2548,7 @@ mbus_probe_secondary_range(mbus_handle *handle, int pos, char *addr_mask, int (*
             {
                 if (!handle->found_event && cb)
                 {
-		    if (cb(matching_mask, mask))
+		    if (cb(matching_mask, mask, arg))
 			break;	/* non-zero cb() => skip segment/exit probe */
 		}
             }
@@ -2574,8 +2574,9 @@ mbus_probe_secondary_range(mbus_handle *handle, int pos, char *addr_mask, int (*
     return 0;
 }
 
-static int print_secondary_address(const char *found, const char *mask)
+static int print_secondary_address(void *arg, const char *found, const char *mask)
 {
+    (void)arg;
     printf("Found a device on secondary address %s [using address mask %s]\n", found, mask);
     return 0;
 }
@@ -2586,7 +2587,7 @@ static int print_secondary_address(const char *found, const char *mask)
 int
 mbus_scan_2nd_address_range(mbus_handle *handle, int pos, char *addr_mask)
 {
-    return mbus_probe_secondary_range(handle, pos, addr_mask, print_secondary_address);
+    return mbus_probe_secondary_range(handle, pos, addr_mask, print_secondary_address, NULL);
 }
 
 //------------------------------------------------------------------------------
