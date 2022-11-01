@@ -2548,7 +2548,7 @@ mbus_probe_secondary_range(mbus_handle *handle, int pos, char *addr_mask, int (*
             {
                 if (!handle->found_event && cb)
                 {
-		    if (cb(matching_mask, mask, arg))
+		    if (cb(arg, matching_mask, mask))
 			break;	/* non-zero cb() => skip segment/exit probe */
 		}
             }
